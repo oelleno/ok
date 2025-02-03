@@ -1,56 +1,54 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>웹페이지 만들기</title>
-    <style>
-        body {
-            margin: 0;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    <title>Firebase 이름 저장</title>
+    <script type="module">
+        // Firebase 모듈 임포트
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
 
-        #canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-        }
+        // Firebase 설정 정보
+        const firebaseConfig = {
+            
+           apiKey: "AIzaSyAxlXZTfOgO4ZrIfXp4t6sAjArTmMQrwuQ",
+          authDomain: "fitgirlviki.firebaseapp.com",
+            projectId: "fitgirlviki",
+            storageBucket: "fitgirlviki.appspot.com",
+            messagingSenderId: "207468197936",
+            appId: "1:207468197936:web:70ea3baa845e40372255f5"
+        };
 
-        .input-field {
-            position: absolute;
-            background-color: rgba(255, 255, 255, 0.5);
-            border: 1px solid #ccc;
-            color: blue;
-            z-index: 2;
-            font-family: Arial, sans-serif;
-        }
+        // Firebase 초기화
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        #signatureArea {
-            position: absolute;
-            border: 1px solid black;
-            z-index: 2;
-        }
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('nameForm').addEventListener('submit', async (event) => {
+                event.preventDefault(); // 폼 제출 기본 동작 방지
+                const name = document.getElementById('nameInput').value; // 입력된 이름 가져오기
 
-    </style>
+                // Firestore에 이름 저장
+                try {
+                    const docRef = await addDoc(collection(db, "names"), {
+                        name: name
+                    });
+                    console.log("문서 추가됨:", docRef.id);
+                    alert("이름이 저장되었습니다!");
+                } catch (e) {
+                    console.error("문서 추가 오류:", e);
+                    alert("저장 중 오류가 발생했습니다.");
+                }
+            });
+        });
+    </script>
 </head>
-
 <body>
-    <canvas id="canvas"></canvas>
-    <input type="text" id="nameField" class="input-field" placeholder="이름" />
-    <input type="checkbox" id="checkbox1" class="input-field" />
-    <button id="submitButton" class="input-field">제출하기</button>
-
-    <div id="signatureArea">
-        <canvas id="signatureCanvas"></canvas>
-    </div>
-
-    <script src="script.js"></script>
+    <h1>이름 입력</h1>
+    <form id="nameForm">
+        <input type="text" id="nameInput" placeholder="이름을 입력하세요" required>
+        <button type="submit">저장</button>
+    </form>
 </body>
-
 </html>
