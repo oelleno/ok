@@ -112,10 +112,7 @@ async function submitForm() {
                     source: cb.value,
                     detail: cb.value === 'SNS' ? document.getElementById('snsField').value :
                         cb.value === '인터넷검색' ? document.querySelector('input[name="internet_detail"]').value :
-                            cb.value === '지인추천' ? {
-                                name: document.querySelector('input[name="referral_name"]').value,
-                                phone: document.querySelector('input[name="referral_phone"]').value
-                            } : ''
+                            cb.value === '지인추천' ? document.querySelector('input[name="referral_name"]').value : ''
                 })),
                 terms_agreed: {
                     main: document.querySelector('input[name="terms_agree"]').checked,
