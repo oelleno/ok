@@ -37,8 +37,13 @@ body {
 /* 2. 태블릿에서 비율 유지하면서 꽉 차게 */
 @media (min-width: 768px) and (max-width: 1024px) {
   .container {
-    width: 100vw; /* 화면 너비에 맞게 꽉 차게 조정 */
+    width: 100%; /* 화면 너비에 맞게 조정 */
     padding: 5px 20px;
+    touch-action: manipulation pinch-zoom; /* 태블릿 확대/축소 활성화 */
+  }
+  body {
+    touch-action: pan-x pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
   }
 }
 
