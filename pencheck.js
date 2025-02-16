@@ -22,6 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let isDrawing = false;
     let isDragging = false;
     let lastPoint = null;
+    let initialY = null;
     let lines = [];
     const fadeOutDuration = 3000;
 
@@ -93,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
             x: e.type.includes("touch") ? e.touches[0].clientX : e.clientX,
             y: e.type.includes("touch") ? e.touches[0].clientY : e.clientY,
         };
+        initialY = point.y;
 
         // `input`과 `select` 위에서는 형광펜 작동 금지, `textarea`에서는 정상 작동
         if (isOverRestrictedField(point.x, point.y)) {
@@ -105,6 +107,39 @@ document.addEventListener("DOMContentLoaded", function () {
         lastPoint = point;
         lines.push(new Line());
         draw(e);
+    }
+
+    function draw(e) {
+        if (!isDrawing) return;
+        e.preventDefault();
+
+        const point = {
+            x: e.type.includes("touch") ? e.touches[0].clientX : e.clientX,
+            y: e.type.includes("touch") ? e.touches[0].clientY : e.clientY,
+        };
+
+        // Check if movement is more vertical than horizontal
+        if (lastPoint && Math.abs(point.y - initialY) > 10) {
+            stopDrawing();
+            return;
+        }
+
+        if (lines.length > 0 && lastPoint) {
+            const lastLine = lines[lines.length - 1];
+            const distance = Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y);
+
+            if (distance > 5) {
+                const midpoint = {
+                    x: (point.x + lastPoint.x) / 2,
+                    y: (point.y + lastPoint.y) / 2,
+                };
+                lastLine.points.push(midpoint);
+            }
+        }
+
+        lastPoint = point;
+        lines[lines.length - 1].points.push(point);
+        drawLines();
     }
 
     function stopDrawing() {

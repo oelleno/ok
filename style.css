@@ -9,7 +9,7 @@
 
 body {
   width: 100vw; /* 뷰포트(화면)의 전체 너비를 차지 */
-  min-height: 100%; /* 최소 높이를 100%로 설정 */
+  height: 100%; /* 최소 높이를 100%로 설정 */
   font-family: "Nunito Sans", sans-serif;
   color: #273444;
   background-color: #f8f9fa;
