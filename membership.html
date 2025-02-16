@@ -146,12 +146,12 @@
       <div class="section name-contact" style="margin-bottom: -5px;">
         <div>
           <p><i class="fas fa-user" style="margin-right: 5px;"></i>이름</p>
-          <input type="text" name="name" id="name" maxlength="20" class="thisbox">
+          <input type="text" name="name" id="name" maxlength="20" class="thisbox" lang="ko" inputmode="text">
         </div>
         <div>
           <p><i class="fas fa-phone" style="margin-right: 5px;"></i>연락처</p>
           <input type="text" name="contact" id="contact" maxlength="20" class="thisbox" placeholder="000-0000-0000"
-            oninput="formatPhoneNumber(this)">
+            oninput="formatPhoneNumber(this)" lang="ko" inputmode="tel">
           <script>
             // Auto-fill verified phone number
             window.onload = function () {
@@ -174,7 +174,7 @@
         <div class="birthdate-group">
           <p><i class="fas fa-calendar-alt" style="margin-right: 5px;"></i>생년월일</p>
           <input type="text" name="birthdate" id="birthdate" maxlength="10" class="thisbox"
-            oninput="formatBirthdate(this)" placeholder="예: 20001010">
+            oninput="formatBirthdate(this)" placeholder="예: 20001010" lang="ko" inputmode="numeric">
         </div>
       </div>
 
@@ -182,7 +182,8 @@
         <div style="flex: 1;">
           <p><i class="fas fa-map-marker-alt" style="margin-right: 5px;"></i>주소</p>
           <div style="display: flex; gap: 10px; align-items: center;">
-            <input type="text" name="address" id="main_address" class="thisbox" style="margin-bottom: 0;" readonly>
+            <input type="text" name="address" id="main_address" class="thisbox" style="margin-bottom: 0;" readonly
+              lang="ko" inputmode="text">
             <input type="button" value="주소 검색" onclick="sample6_execDaumPostcode()" class="address-search-btn"
               style="margin-top: 0; border-radius: 10px;">
           </div>
@@ -198,7 +199,7 @@
               <option value="Upgrade">Upgrade</option>
             </select>
             <input type="text" name="admission_fee" id="admission_fee" class="thisbox"
-              style="width: 50%; height: 35px; background-color: #f5f5f5;" readonly>
+              style="width: 50%; height: 35px; background-color: #f5f5f5;" readonly lang="ko" inputmode="numeric">
           </div>
         </div>
       </div>
@@ -224,7 +225,7 @@
               <option value="12">12개월</option>
             </select>
             <input type="text" name="rental_price" id="rental_price" class="thisbox" placeholder=""
-              style="width: 50%; background-color: #f5f5f5;" readonly>
+              style="width: 50%; background-color: #f5f5f5;" readonly lang="ko" inputmode="numeric">
           </div>
         </div>
         <div style="flex: 0.5;">
@@ -247,7 +248,8 @@
               <option value="12">12개월</option>
             </select>
             <input type="text" name="locker_price" id="locker_price" class="thisbox" placeholder=""
-              oninput="formatCurrency(this)" style="width: 45%; background-color: #f5f5f5;" readonly>
+              oninput="formatCurrency(this)" style="width: 45%; background-color: #f5f5f5;" readonly lang="ko"
+              inputmode="numeric">
           </div>
         </div>
         <div style="flex: 1;">
@@ -266,14 +268,15 @@
                   <option value="12">12개월</option>
                 </select>
                 <input type="text" name="membership_fee" id="membership_fee" class="thisbox"
-                  style="width: 102px; height: 35px; background-color: #f5f5f5;" placeholder="" readonly>
+                  style="width: 102px; height: 35px; background-color: #f5f5f5;" placeholder="" readonly lang="ko"
+                  inputmode="numeric">
               </div>
             </div>
             <div style="flex: 1;">
               <p style="display: inline-block;"><i class="fas fa-tags" style="margin-right: 5px;"></i>할인</p>
               <input type="text" name="discount" id="discount" class="thisbox"
                 style="width: 93.2%; height: 35px; background-color: #ffebeb;" readonly placeholder="총 할인금액 (₩)"
-                onclick="showDiscountPopup()">
+                onclick="showDiscountPopup()" lang="ko" inputmode="numeric">
             </div>
           </div>
         </div>
@@ -291,7 +294,8 @@
             <div style="margin-top: 0px; display: flex; align-items: center; gap: 0px;">
               <label style="min-width: 50px; font-size: 14px;"><input type="checkbox" name="goal" value="기타"> 기타</label>
               <input type="text" name="other" id="other" class="thisbox"
-                style="margin-bottom: 0; width: 368.5px; height: 25px;  margin-left: 0px;" placeholder="기타 입력">
+                style="margin-bottom: 0; width: 368.5px; height: 25px;  margin-left: 0px;" placeholder="기타 입력"
+                lang="ko" inputmode="text">
             </div>
           </div>
           <p style="margin-top: 15px;"><i class="fas fa-clock" style="margin-right: 5px;"></i>운동시간</p>
@@ -355,7 +359,8 @@
                   <option value="23">23시</option>
                   <option value="24">24시</option>
                 </select>
-                <input type="text" class="time-input" style="width: 224px;" placeholder="추가 입력">
+                <input type="text" class="time-input" style="width: 224px;" placeholder="추가 입력" lang="ko"
+                  inputmode="text">
               </label>
             </div>
           </div>
@@ -371,8 +376,9 @@
             </div>
           </div>
           <div class="total-amount-container">
-            <input type="text" name="total_amount" id="total_amount" class="thisbox" placeholder="총 금액" readonly>
-            <input type="text" name="unpaid" id="unpaid" class="thisbox" readonly>
+            <input type="text" name="total_amount" id="total_amount" class="thisbox" placeholder="총 금액" readonly
+              lang="ko" inputmode="numeric">
+            <input type="text" name="unpaid" id="unpaid" class="thisbox" readonly lang="ko" inputmode="numeric">
           </div>
           <div style="margin-top: 7px; font-size: 13px; padding-left: 20px; display: flex; gap: 10px;">
             <div style="flex: 1;">
@@ -388,7 +394,7 @@
                 </div>
                 <input type="text" name="receipt_phone" id="receipt_phone" class="thisbox"
                   style="width: 95%; height: 30px; margin-left: -5px;" placeholder="현금영수증 번호"
-                  oninput="formatPhoneNumber(this)">
+                  oninput="formatPhoneNumber(this)" lang="ko" inputmode="tel">
               </div>
             </div>
             <!-- 복합결제 내역 -->
@@ -451,23 +457,24 @@
                   name="referral" value="SNS">
                 SNS</label>
               <input type="text" name="sns_detail" id="snsField" class="thisbox" style="width: 100px; height: 30px;"
-                placeholder="SNS 채널명">
+                placeholder="SNS 채널명" lang="ko" inputmode="text">
             </div>
             <div style="display: flex; align-items: center; gap: 0px;">
               <label style="font-size: 14px; white-space: nowrap; margin-right: -10px;"><input type="checkbox"
                   name="referral" value="인터넷검색">
                 인터넷검색</label>
               <input type="text" name="internet_detail" class="thisbox" style="width: 180px; height: 30px;"
-                placeholder="사이트/검색어">
+                placeholder="사이트/검색어" lang="ko" inputmode="text">
             </div>
             <div style="display: flex; align-items: center; gap: 0px;">
               <label style="font-size: 14px; white-space: nowrap; margin-right: -10px;"><input type="checkbox"
                   name="referral" value="지인추천">
                 지인추천</label>
               <input type="text" name="referral_name" class="thisbox" style="width: 70px; height: 30px;"
-                placeholder="추천인명">
+                placeholder="추천인명" lang="ko" inputmode="text">
               <input type="text" name="referral_phone" id="referral_phone" class="thisbox"
-                style="width: 130px; height: 30px;" placeholder="추천인 연락처" oninput="formatPhoneNumber(this)">
+                style="width: 130px; height: 30px;" placeholder="추천인 연락처" oninput="formatPhoneNumber(this)"
+                lang="ko" inputmode="tel">
             </div>
           </div>
         </div>
@@ -494,7 +501,7 @@
           센터는 어떤 경우에도 시설 내에서 분실 또는 도난 당한 물품에 대해서 책임지지 않으며, 회원님 개인 물품의 보관은 전적으로 개인 책임입니다.<br>본 센터가 시설 관리 또는 회원 질서유지 등과
           관련하여 책임 있는 경우를 제외하고, 시설을 이용하는 회원님 자신 또는 제 3자의 행위로 인한 신체적, 정신적 장애나<br>경제적 혹은 기타 손실에 대해 본 센터가 어떠한 책임도 지지 않는 것에
           동의합니다.<br>
-          <strong>7.회원권 해지</strong> <br>
+          <strong>7.회원권 해지</strong> <<br>
           해지는 전화 신청이 불가하며, 센터 절차에 따라 직접 방문 작성, 신청하셔야 합니다.<br>
           <strong>8.운동 중 상해 발생</strong> <br>
           트레이너 동반 없이 개인 운동 중 상해가 발생하게 되는 경우, 본 센터는 책임지지 않습니다.<br>
@@ -502,7 +509,7 @@
           등록한 지점 외 다른 지점은 월 5회 이용 가능합니다.<br>
         <div style="text-align: right; margin-top: -25px;">
           <label style="font-size: 14px;">
-            <input type="checkbox" name="terms_agree"> <strong>위 약관에 동의합니다</strong>
+            <input type="checkbox" name="terms_agree" lang="ko" inputmode="checkbox"> <strong>위 약관에 동의합니다</strong>
           </label>
         </div>
 
@@ -530,7 +537,7 @@
           </p>
           <div style="text-align: right; margin-top: -10px;">
             <label style="font-size: 14px;">
-              <input type="checkbox" name="24h_terms_agree"> <strong>위 이용안내에 동의합니다</strong>
+              <input type="checkbox" name="24h_terms_agree" lang="ko" inputmode="checkbox"> <strong>위 이용안내에 동의합니다</strong>
             </label>
           </div>
         </div>
@@ -553,7 +560,7 @@
             7. 환불은 신청 후 영업일 기준 15일 이내에 처리 됩니다.</p>
           <div style="text-align: right; margin-top: 10px;">
             <label style="font-size: 14px;">
-              <input type="checkbox" name="refund_terms_agree"> <strong>위 환불규정에 동의합니다</strong>
+              <input type="checkbox" name="refund_terms_agree" lang="ko" inputmode="checkbox"> <strong>위 환불규정에 동의합니다</strong>
             </label>
           </div>
         </div>
@@ -659,4 +666,4 @@
   </div>
   </form>
   </div>
-  </body< /html>
+  </body</html>
