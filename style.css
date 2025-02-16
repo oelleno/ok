@@ -9,13 +9,14 @@
 
 body {
   width: 100vw; /* 뷰포트(화면)의 전체 너비를 차지 */
-  height: 100%; /* 부모 요소(body의 부모는 html) 기준으로 100% */
+  min-height: 100%; /* 최소 높이를 100%로 설정 */
   font-family: "Nunito Sans", sans-serif;
   color: #273444;
   background-color: #f8f9fa;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* 화면 넘침 방지 */
+  overflow-y: auto; /* 세로 스크롤 허용 */
+  -webkit-overflow-scrolling: touch; /* iOS 스크롤 개선 */
 }
 
 .container {
