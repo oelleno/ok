@@ -61,14 +61,16 @@
                         <label class="form-label">전화번호</label>
                         <div class="input-group">
                             <span class="input-group-text">+82</span>
-                            <input type="tel" class="form-control" id="phone" placeholder="01012341234" inputmode="tel">
+                            <input type="tel" inputmode="tel" pattern="[0-9]*" class="form-control" id="phone"
+                                placeholder="01012341234" inputmode="tel">
                         </div>
                         <button id="send-code" class="btn btn-primary mt-3 w-100">인증번호 전송</button>
                     </div>
                     <div id="verification-code-section" style="display: none;">
                         <div class="mb-3">
                             <label class="form-label">인증번호</label>
-                            <input type="text" class="form-control" id="verification-code" placeholder="6자리 코드 입력" inputmode="tel" lang="ko">
+                            <input type="text" class="form-control" id="verification-code" placeholder="6자리 코드 입력"
+                                inputmode="tel" lang="ko">
                             <button id="verify-code" class="btn btn-success mt-3 w-100">인증하기</button>
                         </div>
                     </div>
