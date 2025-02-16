@@ -1,54 +1,248 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-bs-theme="dark">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Firebase 이름 저장</title>
-    <script type="module">
-        // Firebase 모듈 임포트
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
-        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+    <meta name="language" content="ko">
+    <title>계약서 선택</title>
+    <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
+    <style>
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
 
-        // Firebase 설정 정보
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .btn-contract {
+            width: 100%;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            font-size: 1.1rem;
+        }
+
+        #verification-section,
+        #admin-section {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <script>
+        localStorage.clear(); // 모든 localStorage 데이터 삭제
+    </script>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div id="contract-selection">
+                    <h2 class="text-center mb-4">계약서 선택</h2>
+                    <button class="btn btn-primary btn-contract" onclick="showVerification()">회원가입계약서</button>
+                    <button class="btn btn-secondary btn-contract" disabled>PT계약서 (준비중)</button>
+                    <button class="btn btn-secondary btn-contract" disabled>일일권계약서 (준비중)</button>
+                </div>
+
+                <div id="verification-section">
+                    <h2 class="text-center mb-4">전화번호 인증</h2>
+                    <div id="phone-section" class="mb-3">
+                        <label class="form-label">전화번호</label>
+                        <div class="input-group">
+                            <span class="input-group-text">+82</span>
+                            <input type="tel" class="form-control" id="phone" placeholder="01012341234" inputmode="numeric">
+                        </div>
+                        <button id="send-code" class="btn btn-primary mt-3 w-100">인증번호 전송</button>
+                    </div>
+                    <div id="verification-code-section" style="display: none;">
+                        <div class="mb-3">
+                            <label class="form-label">인증번호</label>
+                            <input type="text" class="form-control" id="verification-code" placeholder="6자리 코드 입력" inputmode="numeric">
+                            <button id="verify-code" class="btn btn-success mt-3 w-100">인증하기</button>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3">
+                        <p></p>
+                        <button id="admin-button" onclick="showAdminSection()" class="btn btn-secondary">관리자코드
+                            입력</button>
+                    </div>
+                    <div id="verification-success" style="display: none;" class="alert alert-success mt-3">
+                        인증이 완료되었습니다!
+                    </div>
+                </div>
+
+                <div id="admin-section">
+                    <h2 class="text-center mb-4">관리자 인증</h2>
+                    <div class="mb-3">
+                        <label class="form-label">관리자 코드</label>
+                        <input type="password" class="form-control" id="admin-code">
+                        <button onclick="verifyAdmin()" class="btn btn-primary mt-3 w-100">확인</button>
+                        <div id="user-info" class="alert mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
         const firebaseConfig = {
-            
-           apiKey: "AIzaSyAxlXZTfOgO4ZrIfXp4t6sAjArTmMQrwuQ",
-          authDomain: "fitgirlviki.firebaseapp.com",
-            projectId: "fitgirlviki",
-            storageBucket: "fitgirlviki.appspot.com",
-            messagingSenderId: "207468197936",
-            appId: "1:207468197936:web:70ea3baa845e40372255f5"
+            apiKey: "AIzaSyAyP5QTMzBtz8lMEzkE4C66CjFbZ3a17QM",
+            authDomain: "bodystar-1b77d.firebaseapp.com",
+            projectId: "bodystar-1b77d",
+            storageBucket: "bodystar-1b77d.firebasestorage.app",
+            messagingSenderId: "1011822927832",
+            appId: "1:1011822927832:web:87f0d859b3baf1d8e21cad"
         };
 
-        // Firebase 초기화
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        auth.languageCode = "ko";
 
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('nameForm').addEventListener('submit', async (event) => {
-                event.preventDefault(); // 폼 제출 기본 동작 방지
-                const name = document.getElementById('nameInput').value; // 입력된 이름 가져오기
+        function showVerification() {
+            document.getElementById('contract-selection').style.display = 'none';
+            document.getElementById('verification-section').style.display = 'block';
+        }
 
-                // Firestore에 이름 저장
+        let verificationId = '';
+
+        document.getElementById('send-code').addEventListener('click', async () => {
+            const phone = document.getElementById('phone').value;
+            if (!phone) return;
+
+            try {
+                const appVerifier = new firebase.auth.RecaptchaVerifier('send-code', {
+                    size: 'invisible'
+                });
+
+                const formattedPhone = `+82${phone}`;
+                const confirmationResult = await auth.signInWithPhoneNumber(formattedPhone, appVerifier);
+                verificationId = confirmationResult.verificationId;
+
+                document.getElementById('verification-code-section').style.display = 'block';
+                document.getElementById('phone-section').style.display = 'none';
+                document.getElementById('admin-button').style.display = 'none';
+            } catch (error) {
+                console.error(error);
+                alert('인증번호 전송 실패');
+            }
+        });
+
+        document.getElementById('verify-code').addEventListener('click', async () => {
+            const code = document.getElementById('verification-code').value;
+            if (!code) return;
+
+            try {
+                const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, code);
+                await auth.signInWithCredential(credential);
+
+                // Format and store verified phone number in localStorage
+                const phoneNumber = document.getElementById('phone').value;
+                const formattedPhone = phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
+                localStorage.setItem('verifiedPhone', formattedPhone);
+
+                document.getElementById('phone-section').style.display = 'none';
+                document.getElementById('verification-code-section').style.display = 'none';
+                document.getElementById('verification-success').style.display = 'block';
+
+                setTimeout(() => {
+                    document.getElementById('verification-section').style.display = 'none';
+                    document.getElementById('admin-section').style.display = 'block';
+                }, 1500);
+            } catch (error) {
+                console.error(error);
+                alert('인증 실패');
+            }
+        });
+
+        function showAdminSection() {
+            document.getElementById('verification-section').style.display = 'none';
+            document.getElementById('admin-section').style.display = 'block';
+        }
+
+        async function verifyAdmin() {
+            const adminCode = document.getElementById('admin-code').value;
+            const verifiedPhone = localStorage.getItem('verifiedPhone');
+
+            if (adminCode === '0000') {
                 try {
-                    const docRef = await addDoc(collection(db, "names"), {
-                        name: name
+                    const querySnapshot = await db.collection("회원가입계약서").get();
+                    let memberFound = false;
+                    let memberData = null;
+
+                    querySnapshot.forEach((doc) => {
+                        if (doc.data().contact === verifiedPhone) {
+                            memberFound = true;
+                            memberData = doc.data();
+                        }
                     });
-                    console.log("문서 추가됨:", docRef.id);
-                    alert("이름이 저장되었습니다!");
-                } catch (e) {
-                    console.error("문서 추가 오류:", e);
-                    alert("저장 중 오류가 발생했습니다.");
+
+                    const userInfo = document.getElementById('user-info');
+                    if (memberFound) {
+                        userInfo.className = 'alert alert-info mt-3';
+                        userInfo.innerHTML = `
+                            <p>기존 회원입니다!</p>
+                            <p>이름: ${memberData.name}</p>
+                            <p>생년월일: ${memberData.birthdate}</p>
+                            <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                <button onclick="loadMemberData('${verifiedPhone}')" class="btn btn-success">불러오기</button>
+                                <button onclick="window.location.href = 'membership.html'" class="btn btn-primary">신규입력</button>
+                            </div>
+                        `;
+                    } else {
+                        userInfo.className = 'alert alert-warning mt-3';
+                        userInfo.innerHTML = '신규고객입니다!';
+                        setTimeout(() => {
+                            window.location.href = 'membership.html';
+                        }, 500);
+                    }
+                    userInfo.style.display = 'block';
+                } catch (error) {
+                    console.error("Error checking member:", error);
+                    alert('오류가 발생했습니다.');
                 }
-            });
+            } else {
+                alert('잘못된 관리자 코드입니다.');
+            }
+        }
+
+        function loadMemberData(phone) {
+            window.location.href = `membership.html?phone=${phone}&load=true`;
+        }
+
+        // Add Enter key functionality
+        document.getElementById('phone').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                document.getElementById('send-code').click();
+            }
+        });
+
+        document.getElementById('verification-code').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                document.getElementById('verify-code').click();
+            }
+        });
+
+        document.getElementById('admin-code').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                verifyAdmin();
+            }
         });
     </script>
-</head>
-<body>
-    <h1>이름 입력</h1>
-    <form id="nameForm">
-        <input type="text" id="nameInput" placeholder="이름을 입력하세요" required>
-        <button type="submit">저장</button>
-    </form>
 </body>
+
 </html>
