@@ -4,7 +4,8 @@
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
   </script>
   <title>회원 가입</title>
    <!-- Font Awesome -->
@@ -128,8 +129,8 @@
       <div style="display: flex; align-items: center;">
         <img src="./BDST.png" alt="Logo" style="height: 50px; margin-right: 20px;">
         <div style="display: flex; align-items: center; gap: 10px; margin-left: 30px; margin-top: 20px;">
-          <i class="fa-brands fa-gg-circle icon"></i>
-          <select name="branch" id="branch" class="thisbox" style="width: 120px; height: 30px;">
+          <i class="fa-brands fa-gg-circle icon" style="color: #000000;"></i>
+          <select name="branch" id="branch" class="thisbox" style="width: 120px; height: 30px; margin-left: -5px;">
             <option value="">지점 선택</option>
             <option value="용문가장점">용문가장점</option>
             <option value="관저점">관저점</option>
@@ -140,8 +141,8 @@
           style="font-size: 14px; font-weight: bold; display: block; width: 100%;">Membership Agreement</span></h2>
 
       <div
-        style="display: flex; align-items: center; gap: 10px; margin-left: 30px; margin-top: 20px; margin-bottom: 10px;">
-        <p style="padding-left: 0px;"><i class="fa-solid fa-circle-info icon"></i>계약담당</p>
+        style="display: flex; align-items: center; gap: 0px; margin-left: 30px; margin-top: 20px; margin-bottom: 10px;">
+        <p style="padding-left: 0px; margin-bottom: -5px;"><i class="fa-solid fa-circle-info icon"></i>계약담당</p>
         <input type="text" name="contract_manager" class="thisbox"
           style="width: 120px; height: 30px; margin-top: 10px;">
       </div>
@@ -188,7 +189,7 @@
 
       <div class="section" style="display: flex; gap: 10px;">
         <div style="flex: 1;">
-          <p><i class="fa-brands fa-gg-circle icon fa-2x"></i>주소</p>
+          <p><i class="fa-solid fa-baseball icon"></i>주소</p>
           <div style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="address" id="main_address" class="thisbox" style="margin-bottom: 0;" readonly
               lang="ko" inputmode="text">
