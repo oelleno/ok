@@ -621,7 +621,7 @@ function showCardPaymentPopup() {
 
     const descInput = document.createElement('input');
     descInput.type = 'text';
-    descInput.style.cssText = 'flex: 0.5; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
+    descInput.style.cssText = 'width: 150px; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
     descInput.placeholder = '결제 내용';
 
     const amountInput = document.createElement('input');
@@ -841,7 +841,7 @@ function showDiscountPopup() {
 
     const itemInput = document.createElement('input');
     itemInput.type = 'text';
-    itemInput.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; display: none; font-size: 16px;';
+    itemInput.style.cssText = 'width: 150px; padding: 5px; border-radius: 5px; display: none; font-size: 16px;';
     itemInput.placeholder = '할인 항목 입력';
 
     select.onchange = function() {
