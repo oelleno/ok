@@ -3,14 +3,16 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"><head>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   </head>
 
 
   </script>
   <title>회원 가입</title>
-   <!-- Font Awesome -->
+  <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Google Material Icons -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
@@ -145,8 +147,7 @@
       <div
         style="display: flex; align-items: center; gap: 0px; justify-content: flex-end; margin-top: 20px; margin-bottom: 10px;">
         <p style="padding-left: 0px; margin-bottom: -5px;"><i class="fa-solid fa-circle-info icon"></i>계약담당</p>
-        <input type="text" name="contract_manager" class="thisbox"
-          style="width: 30%; height: 30px; margin-top: 10px;">
+        <input type="text" name="contract_manager" class="thisbox" style="width: 30%; height: 30px; margin-top: 10px;">
       </div>
     </div>
     <hr>
@@ -236,7 +237,7 @@
               <option value="12">12개월</option>
             </select>
             <input type="text" name="rental_price" id="rental_price" class="thisbox" placeholder=""
-              style="width: 50%; background-color: #f5f5f5;" readonly lang="ko" inputmode="numeric">
+              style="width: 50%; background-color: #f5f5f5; margin-left: 5px;" readonly lang="ko" inputmode="numeric">
           </div>
         </div>
         <div style="flex: 0.5;">
@@ -259,17 +260,17 @@
               <option value="12">12개월</option>
             </select>
             <input type="text" name="locker_price" id="locker_price" class="thisbox" placeholder=""
-              oninput="formatCurrency(this)" style="width: 45%; background-color: #f5f5f5;" readonly lang="ko"
+              oninput="formatCurrency(this)" style="width: 45%; margin-left: 5px; background-color: #f5f5f5;" readonly lang="ko"
               inputmode="numeric">
           </div>
         </div>
         <div style="flex: 1;">
-          <div style="display: flex; gap: 4.8px; align-items: center;">
+          <div style="display: flex; gap: 10px; align-items: center;">
             <div style="flex: 1;">
               <p style="display: inline-block; margin-left: -5px;"><i class="fa-solid fa-circle-check icon"></i>기간회비</p>
               <div style="display: flex; gap: 0px;">
                 <select name="membership_months" id="membership_months" class="thisbox"
-                  style="margin-left: 11px; width: 30%;" onchange="updateMembershipFee(this)">
+                  style="margin-left: 11px; width: 40%;" onchange="updateMembershipFee(this)">
                   <option value="">기간</option>
                   <option value="1">1개월</option>
                   <option value="2">2개월</option>
@@ -278,7 +279,7 @@
                   <option value="12">12개월</option>
                 </select>
                 <input type="text" name="membership_fee" id="membership_fee" class="thisbox"
-                  style="width: 50%; height: 35px; background-color: #f5f5f5;" placeholder="" readonly lang="ko"
+                  style="width: 60%; height: 35px; margin-left: 5px; background-color: #f5f5f5;" placeholder="" readonly lang="ko"
                   inputmode="numeric">
               </div>
             </div>
@@ -296,7 +297,7 @@
         <div style="flex: 1;">
           <p><i class="fa-solid fa-record-vinyl icon"></i>운동목적</p>
           <div class="goal-group"
-            style="border: 1px solid #ccc; padding: 7px; border-radius: 10px; margin: 0 0px 0px 15px;">
+            style="border: 1px solid #ccc; padding: 10px 7px; border-radius: 10px; margin: 0 0px 0px 15px;">
             <label><input type="checkbox" name="goal" value="다이어트"> 다이어트</label>
             <label><input type="checkbox" name="goal" value="근육증가"> 근육증가</label>
             <label><input type="checkbox" name="goal" value="체형교정"> 체형교정</label>
@@ -304,15 +305,15 @@
             <div style="margin-top: 0px; display: flex; align-items: center; gap: 0px;">
               <label style="min-width: 50px; font-size: 14px;"><input type="checkbox" name="goal" value="기타"> 기타</label>
               <input type="text" name="other" id="other" class="thisbox"
-                style="margin-bottom: 0; width: 120%; height: 25px;  margin-left: 0px;" placeholder="기타 입력" lang="ko"
+                style="margin-bottom: 0; width: 120%; height: 25px;  margin-left: 0px;font-size: 12px;" placeholder="기타 입력" lang="ko"
                 inputmode="text">
             </div>
           </div>
           <p style="margin-top: 15px;"><i class="fa-solid fa-clock icon"></i>운동시간</p>
-          <div style="border: 1px solid #ccc; padding: 7px; border-radius: 10px; margin: 0 0px 10px 15px;">
-            <div style="display: flex; align-items: center; gap: 1px;">
-              <label style="display: flex; align-items: center; gap: 5px; font-size: 14px;">
-                <select name="morning_hour" class="time-input">
+          <div style="border: 1px solid #ccc; padding: 10px 7px; border-radius: 10px; margin: 0 0px 10px 15px;">
+            <div style="display: flex; align-items: center; gap: 5px;">
+              <div style="display: flex; align-items: center; white-space: nowrap; font-size: 14px;">
+                <select name="morning_hour" class="time-input" style="margin-right: 5px;">
                   <option value="">시간</option>
                   <option value="1">01시</option>
                   <option value="2">02시</option>
@@ -339,8 +340,8 @@
                   <option value="23">23시</option>
                   <option value="24">24시</option>
                 </select>
-                <span>부터</span>
-              </label>
+                <span style="display: inline-block;">부터</span>
+              </div>
               <label style="display: flex; align-items: center; gap: 5px; font-size: 14px;">
                 <select name="afternoon_hour" class="time-input">
                   <option value="">시간</option>
@@ -369,7 +370,7 @@
                   <option value="23">23시</option>
                   <option value="24">24시</option>
                 </select>
-                <input type="text" class="time-input" style="width: 100%;" placeholder="추가 입력" lang="ko"
+                <input type="text" class="time-input" style="width: 100%;font-size: 12px;" placeholder="추가 입력" lang="ko"
                   inputmode="text">
               </label>
             </div>
@@ -378,11 +379,11 @@
         <div style="flex: 1;">
           <div style="display: flex; align-items: center; gap: 5px; margin-top: 10px;">
             <p style="margin: 0;"><i class="fa-solid fa-gauge icon"></i>합계</p>
-            <div style="display: flex; gap: 0px;">
-              <label style="font-size: 14px;"><input type="radio" name="payment" value="카드"> 카드</label>
-              <label style="font-size: 14px;"><input type="radio" name="payment" value="현금"> 현금</label>
-              <label style="font-size: 14px;"><input type="radio" name="payment" value="계좌이체"> 계좌이체</label>
-              <label style="font-size: 14px;"><input type="radio" name="payment" value="복합결제"> 복합결제</label>
+            <div style="display: flex; gap: 0px; font-size: 13px; align-items: center;">
+              <label><input type="radio" name="payment" value="카드"> 카드</label>
+              <label><input type="radio" name="payment" value="현금"> 현금</label>
+              <label><input type="radio" name="payment" value="계좌이체"> 계좌이체</label>
+              <label><input type="radio" name="payment" value="복합결제"> 복합결제</label>
             </div>
           </div>
           <div class="total-amount-container">
@@ -395,7 +396,7 @@
               <div style="display: flex; flex-direction: column; gap: 2px;">
                 <div style="display: flex; align-items: center; gap: 1px;">
                   <span style="white-space: nowrap; margin-right: 1px;">현금영수증 여부</span>
-                  <label style="display: flex; align-items: center; gap: 1px;">
+                  <label style="display: flex; align-items: center; gap: px;">
                     <input type="radio" name="cash_receipt" value="O"> O
                   </label>
                   <label style="display: flex; align-items: center; gap: 0px;">
@@ -403,7 +404,7 @@
                   </label>
                 </div>
                 <input type="text" name="receipt_phone" id="receipt_phone" class="thisbox"
-                  style="width: 95%; height: 30px; margin-left: -5px;" placeholder="현금영수증 번호"
+                  style="width: 95%; height: 30px; margin-left: -5px;font-size: 12px;" placeholder="현금영수증 번호"
                   oninput="formatPhoneNumber(this)" lang="ko" inputmode="tel">
               </div>
             </div>
@@ -415,7 +416,8 @@
 
           <p style="margin-top: 13px; width: 45.6%;">
             <i class="fa-solid fa-circle-play icon"></i>회원권
-            시작일</p>
+            시작일
+          </p>
           <input type="date" name="membership_start_date" id="membership_start_date" class="thisbox"
             style="width: 46%;">
           <script>
@@ -467,21 +469,21 @@
               <label style="font-size: 14px; white-space: nowrap; margin-right: -10px;"><input type="checkbox"
                   name="referral" value="SNS">
                 SNS</label>
-              <input type="text" name="sns_detail" id="snsField" class="thisbox" style="width: 100px; height: 30px;"
+              <input type="text" name="sns_detail" id="snsField" class="thisbox" style="width: 100px; height: 30px;font-size: 12px; "
                 placeholder="SNS 채널명" lang="ko" inputmode="text">
             </div>
             <div style="display: flex; align-items: center; gap: 0px;">
               <label style="font-size: 14px; white-space: nowrap; margin-right: -10px;"><input type="checkbox"
                   name="referral" value="인터넷검색">
                 인터넷검색</label>
-              <input type="text" name="internet_detail" class="thisbox" style="width: 100%; height: 30px;"
-                placeholder="사이트/검색어" lang="ko" inputmode="text">
+              <input type="text" name="internet_detail" class="thisbox"
+                style="font-size: 12px; width: 100%; height: 30px; padding-left:2px" placeholder="사이트/검색어" lang="ko" inputmode="text">
             </div>
             <div style="display: flex; align-items: center; gap: 0px;">
               <label style="font-size: 14px; white-space: nowrap; margin-right: -10px;"><input type="checkbox"
                   name="referral" value="지인추천">
                 지인추천</label>
-              <input type="text" name="referral_name" class="thisbox" style="width: 100%; height: 30px;"
+              <input type="text" name="referral_name" class="thisbox" style="font-size: 12px; width: 100%; height: 30px;"
                 placeholder="이름/연락처" lang="ko" inputmode="text">
             </div>
           </div>
@@ -676,4 +678,4 @@
   </div>
   </form>
   </div>
-  </body</html>
+  </body< /html>
