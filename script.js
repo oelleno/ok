@@ -621,13 +621,13 @@ function showCardPaymentPopup() {
 
     const descInput = document.createElement('input');
     descInput.type = 'text';
-    descInput.style.cssText = 'flex: 2; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
+    descInput.style.cssText = 'flex: 0.5; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
     descInput.placeholder = '결제 내용';
 
     const amountInput = document.createElement('input');
     amountInput.type = 'text';
-    amountInput.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
-    amountInput.placeholder = '금액';
+    amountInput.style.cssText = 'width: 150px; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
+    amountInput.placeholder = '(₩)금액입력';
     amountInput.setAttribute('inputmode', 'numeric');
     amountInput.oninput = function() {
       formatCurrency(this);
@@ -850,8 +850,8 @@ function showDiscountPopup() {
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; font-size: 16px;';
-    input.placeholder = '금액 입력 (₩)';
+    input.style.cssText = 'width: 150px; padding: 5px; border-radius: 5px; font-size: 16px;';
+    input.placeholder = '(₩)금액입력';
     input.setAttribute('inputmode', 'numeric');
     input.oninput = function() { formatCurrency(this); };
     input.onkeypress = function(e) {
