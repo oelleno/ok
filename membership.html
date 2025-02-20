@@ -3,17 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge"><head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  </head>
-
-
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   </script>
   <title>회원 가입</title>
-   <!-- Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <!-- Google Material Icons -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" />
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -131,8 +125,8 @@
       <div style="display: flex; align-items: center;">
         <img src="./BDST.png" alt="Logo" style="height: 50px; margin-right: 20px;">
         <div style="display: flex; align-items: center; gap: 10px; margin-left: 30px; margin-top: 20px;">
-          <i class="fa-brands fa-gg-circle icon" style="color: #000000;"></i>
-          <select name="branch" id="branch" class="thisbox" style="width: 120px; height: 30px; margin-left: -5px;">
+          <i class="fas fa-building" style="font-size: 14px; background: #000; color: #fff; width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center;"></i>
+          <select name="branch" id="branch" class="thisbox" style="width: 120px; height: 30px;">
             <option value="">지점 선택</option>
             <option value="용문가장점">용문가장점</option>
             <option value="관저점">관저점</option>
@@ -143,8 +137,8 @@
           style="font-size: 14px; font-weight: bold; display: block; width: 100%;">Membership Agreement</span></h2>
 
       <div
-        style="display: flex; align-items: center; gap: 0px; margin-left: 30px; margin-top: 20px; margin-bottom: 10px;">
-        <p style="padding-left: 0px; margin-bottom: -5px;"><i class="fa-solid fa-circle-info icon"></i>계약담당</p>
+        style="display: flex; align-items: center; gap: 10px; margin-left: 30px; margin-top: 20px; margin-bottom: 10px;">
+        <p style="padding-left: 0px;"><i class="fas fa-user-tie" style="margin-right: 5px;"></i>계약담당</p>
         <input type="text" name="contract_manager" class="thisbox"
           style="width: 120px; height: 30px; margin-top: 10px;">
       </div>
@@ -156,11 +150,15 @@
 
       <div class="section name-contact" style="margin-bottom: -5px;">
         <div>
-          <p><i class="fa-solid fa-circle-user icon"></i>이름</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 512 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32v224c0 17.7 14.3 32 32 32s32-14.3 32-32V80zm160 192c0 26.5-21.5 48-48 48H144c-26.5 0-48-21.5-48-48V80c0-26.5 21.5-48 48-48h288c26.5 0 48 21.5 48 48V272z"/></svg>
+          </span>이름</p>
           <input type="text" name="name" id="name" maxlength="20" class="thisbox" lang="ko" inputmode="text">
         </div>
         <div>
-          <p><i class="fa-solid fa-bowling-ball icon"></i>연락처</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 512 512"><path d="M497.39 361.8l-112-48a24 24 0 0 0-8.61 4.77L256 384l-132.78-56.23a24 24 0 0 0-8.61 4.77l-112 48a24 24 0 0 0 11.35 35.94l132.78 56.23 132.78-56.23a24 24 0 0 0 11.35-35.94zM512 192C512 158.7 490.3 128 456 128H56C25.3 128 0 158.7 0 192V320c0 33.3 25.3 64 56 64H456c34.3 0 56-30.7 56-64V192z"/></svg>
+          </span>연락처</p>
           <input type="text" name="contact" id="contact" maxlength="20" class="thisbox" placeholder="000-0000-0000"
             oninput="formatPhoneNumber(this)" lang="ko" inputmode="tel">
           <script>
@@ -176,14 +174,18 @@
           </script>
         </div>
         <div class="gender-group">
-          <p><i class="fa-solid fa-futbol icon"></i>성별</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 448 512"><path d="M432 256c0 17.7-14.3 32-32 32H256c-17.7 0-32-14.3-32-32s14.3-32 32-32h144c17.7 0 32 14.3 32 32zm-32-128c0 17.7-14.3 32-32 32H256c-17.7 0-32-14.3-32-32s14.3-32 32-32h144c17.7 0 32 14.3 32 32zm0 256c0 17.7-14.3 32-32 32H256c-17.7 0-32-14.3-32-32s14.3-32 32-32h144c17.7 0 32 14.3 32 32z"/></svg>
+          </span>성별</p>
           <div class="radio-group">
             <label style="font-size: 14px;"><input type="radio" name="gender" value="남자"> 남자</label>
             <label style="font-size: 14px;"><input type="radio" name="gender" value="여자"> 여자</label>
           </div>
         </div>
         <div class="birthdate-group">
-          <p><i class="fa-solid fa-volleyball icon"></i>생년월일</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 576 512"><path d="M528 256c0 17.7-14.3 32-32 32H40c-17.7 0-32-14.3-32-32s14.3-32 32-32h464c17.7 0 32 14.3 32 32zm-32-128c0 17.7-14.3 32-32 32H40c-17.7 0-32-14.3-32-32s14.3-32 32-32h464c17.7 0 32 14.3 32 32zM48 384h480c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32s14.3-32 32-32z"/></svg>
+          </span>생년월일</p>
           <input type="text" name="birthdate" id="birthdate" maxlength="10" class="thisbox"
             oninput="formatBirthdate(this)" placeholder="예: 20001010" lang="ko" inputmode="numeric">
         </div>
@@ -191,7 +193,9 @@
 
       <div class="section" style="display: flex; gap: 10px;">
         <div style="flex: 1;">
-          <p><i class="fa-solid fa-baseball icon"></i>주소</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 448 512"><path d="M0 224c0-17.7 14.3-32 32-32H96c17.7 0 32 14.3 32 32V448h32c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H64V256H32c-17.7 0-32-14.3-32-32z"/></svg>
+          </span>주소</p>
           <div style="display: flex; gap: 10px; align-items: center;">
             <input type="text" name="address" id="main_address" class="thisbox" style="margin-bottom: 0;" readonly
               lang="ko" inputmode="text">
@@ -200,7 +204,9 @@
           </div>
         </div>
         <div style="flex: 1;">
-          <p><i class="fa-solid fa-registered icon"></i>회원권</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 512 512"><path d="M464 128H56c-17.7 0-32 14.3-32 32v128c0 17.7 14.3 32 32 32h408c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32zm-48 208H104c-13.3 0-24-10.7-24-24V160c0-13.3 10.7-24 24-24h312c13.3 0 24 10.7 24 24V256c0 13.3-10.7 24-24 24z"/></svg>
+          </span>회원권</p>
           <div style="display: flex; gap: 10px;">
             <select name="membership" id="membership" class="thisbox" style="width: 50%; height: 35px;"
               onchange="updateAdmissionFee()">
@@ -217,7 +223,9 @@
 
       <div class="section" style="display: flex; gap: 10px;">
         <div style="flex: 0.5;">
-          <p><i class="fa-solid fa-universal-access icon"></i>운동복 대여</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 512 512"><path d="M448 256c0 121.4-98.6 220-220 220S8 377.4 8 256 106.6 36 228 36s220 98.6 220 220zm-112-160c-17.7 0-32 14.3-32 32s14.3 32 32 32h64c17.7 0 32-14.3 32-32s-14.3-32-32-32h-64zm-112 0c-17.7 0-32 14.3-32 32s14.3 32 32 32h64c17.7 0 32-14.3 32-32s-14.3-32-32-32h-64z"/></svg>
+          </span>운동복 대여</p>
           <div style="display: flex; gap: 0px;">
             <select name="rental_months" id="rental_months" class="thisbox" style="width: 50%;"
               onchange="updateRentalPrice(this)">
@@ -240,7 +248,9 @@
           </div>
         </div>
         <div style="flex: 0.5;">
-          <p><i class="fa-solid fa-circle-minus icon"></i>라커 대여</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 448 512"><path d="M416 32H32C14.3 32 0 46.3 0 64v384c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V64c0-17.7-14.3-32-32-32zm-32 256h-32v-64c0-35.3-28.7-64-64-64H128c-35.3 0-64 28.7-64 64v64h-32c-17.7 0-32 14.3-32 32s14.3 32 32 32h32v64c0 35.3 28.7 64 64 64h128c35.3 0 64-28.7 64-64v-64h32c17.7 0 32-14.3 32-32s-14.3-32-32-32z"/></svg>
+          </span>라커 대여</p>
           <div style="display: flex; gap: 0px;">
             <select name="locker_months" id="locker_months" class="thisbox" style="width: 90px;"
               onchange="updateLockerPrice(this)">
@@ -266,7 +276,9 @@
         <div style="flex: 1;">
           <div style="display: flex; gap: 4.8px; align-items: center;">
             <div style="flex: 1;">
-              <p style="display: inline-block; margin-left: -5px;"><i class="fa-solid fa-circle-check icon"></i>기간회비</p>
+              <p style="display: inline-block;"><span class="icon-circle">
+                <svg viewBox="0 0 512 512"><path d="M256 32C114.6 32 0 128.6 0 256s114.6 224 256 224 256-114.6 256-224S397.4 32 256 32zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200z"/></svg>
+              </span>기간회비</p>
               <div style="display: flex; gap: 0px;">
                 <select name="membership_months" id="membership_months" class="thisbox"
                   style="margin-left: 11px; width: 90px;" onchange="updateMembershipFee(this)">
@@ -283,7 +295,9 @@
               </div>
             </div>
             <div style="flex: 1;">
-              <p style="display: inline-block;"><i class="fa-solid fa-circle-down icon"></i>할인</p>
+              <p style="display: inline-block;"><span class="icon-circle">
+                <svg viewBox="0 0 512 512"><path d="M464 336H144c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48h320c26.5 0 48 21.5 48 48v144c0 26.5-21.5 48-48 48zm-64-48c0-13.3-10.7-24-24-24H176c-13.3 0-24 10.7-24 24v80c0 13.3 10.7 24 24 24h224c13.3 0 24-10.7 24-24v-80z"/></svg>
+              </span>할인</p>
               <input type="text" name="discount" id="discount" class="thisbox"
                 style="width: 93.2%; height: 35px; background-color: #ffebeb;" readonly placeholder="총 할인금액 (₩)"
                 onclick="showDiscountPopup()" lang="ko" inputmode="numeric">
@@ -294,7 +308,9 @@
 
       <div class="section" style="display: flex; gap: 10px;">
         <div style="flex: 1;">
-          <p><i class="fa-solid fa-record-vinyl icon"></i>운동목적</p>
+          <p><span class="icon-circle">
+            <svg viewBox="0 0 512 512"><path d="M256 32c141.4 0 256 114.6 256 256s-114.6 256-256 256S0 397.4 0 256 114.6 0 256 0zM256 480c110.5 0 200-89.5 200-200S366.5 80 256 80 56 169.5 56 280s89.5 200 200 200z"/></svg>
+          </span>운동목적</p>
           <div class="goal-group"
             style="border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin: 0 0px 0px 15px;">
             <label><input type="checkbox" name="goal" value="다이어트"> 다이어트</label>
@@ -308,7 +324,9 @@
                 inputmode="text">
             </div>
           </div>
-          <p style="margin-top: 15px;"><i class="fa-solid fa-clock icon"></i>운동시간</p>
+          <p style="margin-top: 15px;"><span class="icon-circle">
+            <svg viewBox="0 0 512 512"><path d="M464 128H56c-17.7 0-32 14.3-32 32v128c0 17.7 14.3 32 32 32h408c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32zm-48 208H104c-13.3 0-24-10.7-24-24V160c0-13.3 10.7-24 24-24h312c13.3 0 24 10.7 24 24V256c0 13.3-10.7 24-24 24z"/></svg>
+          </span>운동시간</p>
           <div style="border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin: 0 0px 10px 15px;">
             <div style="display: flex; align-items: center; gap: 1px;">
               <label style="display: flex; align-items: center; gap: 5px; font-size: 14px;">
@@ -377,7 +395,9 @@
         </div>
         <div style="flex: 1;">
           <div style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
-            <p style="margin: 0;"><i class="fa-solid fa-gauge icon"></i>합계</p>
+            <p style="margin: 0;"><span class="icon-circle">
+              <svg viewBox="0 0 512 512"><path d="M464 128H56c-17.7 0-32 14.3-32 32v128c0 17.7 14.3 32 32 32h408c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32zm-48 208H104c-13.3 0-24-10.7-24-24V160c0-13.3 10.7-24 24-24h312c13.3 0 24 10.7 24 24V256c0 13.3-10.7 24-24 24z"/></svg>
+            </span>합계</p>
             <div style="display: flex; gap: 15px;">
               <label style="font-size: 14px;"><input type="radio" name="payment" value="카드"> 카드</label>
               <label style="font-size: 14px;"><input type="radio" name="payment" value="현금"> 현금</label>
@@ -413,8 +433,9 @@
             </div>
           </div>
 
-          <p style="margin-top: 13px; width: 45.6%;">
-            <i class="fa-solid fa-circle-play icon"></i>회원권
+          <p style="margin-top: 13px; width: 45.6%;"><span class="icon-circle">
+            <svg viewBox="0 0 512 512"><path d="M416 208h-96v-64c0-17.7-14.3-32-32-32h-32c-17.7 0-32 14.3-32 32v64h-96c-17.7 0-32 14.3-32 32s14.3 32 32 32h96v64c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32v-64h96c17.7 0 32-14.3 32-32s-14.3-32-32-32zm-32-64h-32v-32c0-17.7-14.3-32-32-32h-32c-17.7 0-32 14.3-32 32v32h-32c-17.7 0-32 14.3-32 32s14.3 32 32 32h32v32c0 17.7 14.3 32 32 32h32c17.7 0 32-14.3 32-32v-32h32c17.7 0 32-14.3 32-32s-14.3-32-32-32z"/></svg>
+          </span>회원권
             시작일</p>
           <input type="date" name="membership_start_date" id="membership_start_date" class="thisbox"
             style="width: 46%;">
@@ -456,7 +477,9 @@
       </div>
 
       <div class="section" style="margin-top: -10px;">
-        <p><i class="fa-solid fa-compass icon"></i>가입경로</p>
+        <p><span class="icon-circle">
+          <svg viewBox="0 0 512 512"><path d="M464 336H144c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48h320c26.5 0 48 21.5 48 48v144c0 26.5-21.5 48-48 48zm-64-48c0-13.3-10.7-24-24-24H176c-13.3 0-24 10.7-24 24v80c0 13.3 10.7 24 24 24h224c13.3 0 24-10.7 24-24v-80z"/></svg>
+        </span>가입경로</p>
         <div style="padding: 5px 10px; margin: 0 0px 10px 15px; border: 1px solid #ccc; border-radius: 10px;">
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;">
             <label style="font-size: 14px; white-space: nowrap;"><input type="checkbox" name="referral" value="간판">
@@ -539,7 +562,9 @@
             7. 휴일 및 공휴일에는 운동복 및 수건이 지급되지 않을 수 있습니다.<br>
             8. 형법 제319조에 의거 무단출입 또는 타인의 무단출입을 도와줄 경우,<br>&nbsp;&nbsp;&nbsp;&nbsp;최대 500만원의 벌금에 처할 수 있습니다.<br>
             <hr style="border: 0; border-top: 1px solid #003366;; margin: 5px 0;">
-            <strong style="font-size: 14px;"><i class="fa-solid fa-circle-exclamation icon"></i>모든
+            <strong style="font-size: 14px;"><span class="icon-circle">
+              <svg viewBox="0 0 512 512"><path d="M464 336H144c-26.5 0-48-21.5-48-48V144c0-26.5 21.5-48 48-48h320c26.5 0 48 21.5 48 48v144c0 26.5-21.5 48-48 48zm-64-48c0-13.3-10.7-24-24-24H176c-13.3 0-24 10.7-24 24v80c0 13.3 10.7 24 24 24h224c13.3 0 24-10.7 24-24v-80z"/></svg>
+            </span>모든
               사용자는 항상 클럽 내 규칙 및 표준에 따라야 합니다.<br>
               <span style="margin-left: 24px;">위 규칙 위반 시 회원권 권한이 상실될 수 있습니다.</span></strong>
           </p>
@@ -676,4 +701,4 @@
   </div>
   </form>
   </div>
-  </body</html>
+  </body< /html>

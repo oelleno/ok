@@ -91,48 +91,57 @@ function downloadAsImage() {
       text-align: center;
       min-width: 300px;
       min-height: 250px;
-      font-size: 16px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+      font-size: 16px; /* Increased font size */
     `;
 
     const statusText = document.createElement('h3');
     statusText.textContent = '계약서 업로드 중...';
-    statusText.style.cssText = `
-      margin-top: 0px;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      white-space: nowrap; /* 줄바꿈 방지 */
-    `;
+    statusText.style.marginBottom = '20px';
     popup.appendChild(statusText);
 
     setTimeout(() => {
       statusText.textContent = '계약서 업로드 완료!';
       setTimeout(() => {
-        statusText.textContent = '계약서URL 저장 완료!';
+        statusText.textContent = '계약서 URL 저장 완료!';
         setTimeout(() => {
           statusText.style.display = 'none';
+          const excelBtn = document.createElement('button');
+          excelBtn.textContent = '엑셀 업데이트';
+          excelBtn.onclick = async function() {
+            this.style.display = 'none';
+            statusText.textContent = '엑셀 업데이트 중...';
+            await submitqqForm();
+            statusText.textContent = '엑셀 업데이트 완료!';
 
-          // Create receipt button
-          const receiptBtn = document.createElement('button');
-          receiptBtn.textContent = '영수증 저장';
-          receiptBtn.onclick = function() {
-            if (!window.docId) {
-              alert('계약서 번호를 찾을 수 없습니다.');
-              return;
-            }
-            localStorage.setItem('receipt_doc_id', window.docId);
-            //  Add code here to save receipt URL to database
-            window.location.href = 'receipt.html';
+            // Create receipt button
+            const receiptBtn = document.createElement('button');
+            receiptBtn.textContent = '영수증 저장';
+            receiptBtn.onclick = function() {
+              if (!window.docId) {
+                  alert('계약서 번호를 찾을 수 없습니다.');
+                  return;
+              }
+              localStorage.setItem('receipt_doc_id', window.docId);
+              //  Add code here to save receipt URL to database
+              window.location.href = 'receipt.html';
+            };
+            receiptBtn.style.cssText = `
+              margin-top: 20px;
+              padding: 10px 20px;
+              background: #0078D7;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 16px;
+            `;
+            popup.appendChild(receiptBtn);
           };
-          receiptBtn.style.cssText = `
-            margin-top: 0px;
+          excelBtn.style.cssText = `
+            margin-top: 20px;
             padding: 10px 20px;
-            background: #0078D7;
+            background: #03C75A;
             color: white;
             border: none;
             border-radius: 5px;
@@ -140,8 +149,7 @@ function downloadAsImage() {
             font-weight: bold;
             font-size: 16px;
           `;
-          popup.appendChild(receiptBtn);
-
+          popup.appendChild(excelBtn);
         }, 1000);
       }, 1000);
     }, 1000);

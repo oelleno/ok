@@ -4,35 +4,25 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;
-  /* 텍스트복사방지 */
+  user-select: none; /* 텍스트복사방지 */
 }
 
-
 body {
-  width: 100vw;
-  height: 100%;
+  width: 100vw; /* 뷰포트(화면)의 전체 너비를 차지 */
+  height: 100%; /* 최소 높이를 100%로 설정 */
   font-family: "Nunito Sans", sans-serif;
   color: #273444;
   background-color: #f8f9fa;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
-  /* 세로 스크롤 허용 */
-  overflow-x: hidden;
-  /* 가로 스크롤 방지 */
-  touch-action: manipulation;
-  /* 기본 터치 동작 허용 */
-  -webkit-overflow-scrolling: touch;
-  /* iOS에서 부드러운 스크롤 */
+  overflow-y: auto; /* 세로 스크롤 허용 */
+  -webkit-overflow-scrolling: touch; /* iOS 스크롤 개선 */
 }
 
 .container {
   width: 1000px;
-  max-width: 100%;
-  /* 화면 크기에 맞게 조정 */
-  min-width: 320px;
-  /* 최소 크기 설정 */
+  max-width: 100%; /* 화면 크기에 맞게 조정 */
+  min-width: 320px; /* 최소 크기 설정 */
   background-color: white;
   border-radius: 20px;
   margin: 20px auto;
@@ -44,14 +34,13 @@ body {
 
 }
 
-/* 2. 태블릿에서 비율 유지하면서 꽉 차게/ Teclast P50 = 1280x800/*/
-@media (min-width: 481px) and (max-width: 1500px) {
+/* 2. 태블릿에서 비율 유지하면서 꽉 차게 */
+@media (min-width: 768px) and (max-width: 1024px) {
   .container {
-    width: 100%;
-    padding: 5px 10px;
-    touch-action: manipulation pinch-zoom;
+    width: 100%; /* 화면 너비에 맞게 조정 */
+    padding: 5px 20px;
+    touch-action: manipulation pinch-zoom; /* 태블릿 확대/축소 활성화 */
   }
-
   body {
     touch-action: pan-x pan-y pinch-zoom;
     -webkit-overflow-scrolling: touch;
@@ -59,23 +48,12 @@ body {
 }
 
 /* 3. 모바일(768px 이하)에서만 원래 크기로 유지 */
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .container {
-    width: 1000px;
-    /* 원래 크기 고정 */
-    max-width: unset;
-    /* 최대 너비 제한 해제 */
-    min-width: unset;
-    /* 최소 너비 제한 해제 */
+    width: 1000px; /* 원래 크기 고정 */
+    max-width: unset; /* 최대 너비 제한 해제 */
+    min-width: unset; /* 최소 너비 제한 해제 */
   }
-}
-
-/* 터치 대응 최적화 */
-body,
-.container {
-  touch-action: manipulation;
-  /* 기본 터치 동작 허용 */
-  -webkit-overflow-scrolling: touch;
 }
 
 /* 2. 레이아웃 및 섹션 스타일 */
@@ -110,7 +88,7 @@ p {
   font-size: 15px;
   color: #000000;
   font-weight: bold;
-  padding-left: 10px;
+  padding-left: 15px;
   margin-top: 10px;
   margin-bottom: 0px;
   line-height: 1.4;
@@ -237,7 +215,6 @@ input[name="address"],
   transition: background-color 0.3s;
   background-color: #0078D7;
 }
-
 .submitBtn:hover {
   background-color: #005bb5;
 }
@@ -311,11 +288,23 @@ hr {
 }
 
 /* Icon styling */
-.fa-solid,
-.fa-brands {
-  font-size: 19px;
-  margin-right: 5px;
-  margin-left: 5px;
+.fas {
+  background: #000;
+  color: #fff !important;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  text-align: center;
+}
+
+.icon-circle svg {
+  width: 11px;
+  height: 11px;
+  fill: white;
 }
 
 
@@ -338,25 +327,16 @@ hr {
   border-radius: 15px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
-
-.card-body {
-  padding: 2rem;
-}
-
+.card-body { padding: 2rem; }
 .form-control:focus {
   box-shadow: none;
   border-color: var(--bs-primary);
 }
-
-.btn-primary {
-  padding: 0.6rem 1.5rem;
-}
-
+.btn-primary { padding: 0.6rem 1.5rem; }
 .spinner-border {
   width: 3rem;
   height: 3rem;
 }
-
 #loading {
   position: fixed;
   top: 50%;
@@ -366,36 +346,23 @@ hr {
   padding: 2rem;
   border-radius: 10px;
 }
-
 .alert {
   margin-top: 1rem;
   margin-bottom: 0;
 }
-
-#verification-form {
-  transition: all 0.3s ease;
-}
-
-.input-group-text {
-  min-width: 50px;
-}
-
+#verification-form { transition: all 0.3s ease; }
+.input-group-text { min-width: 50px; }
 #contracts-form {
   opacity: 0;
   animation: fadeIn 0.5s forwards;
 }
-
 @keyframes fadeIn {
-  to {
-    opacity: 1;
-  }
+  to { opacity: 1; }
 }
-
 #contracts-form .btn-lg {
   padding: 1rem;
   font-size: 1.1rem;
 }
-
 #contracts-form .btn-secondary {
   opacity: 0.6;
   cursor: not-allowed;
