@@ -561,7 +561,7 @@ function showCardPaymentPopup() {
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     z-index: 1000;
-    min-width: 500px;
+    min-width: 300px;
     font-size: 16px; /* Increased font size */
   `;
 
@@ -628,6 +628,7 @@ function showCardPaymentPopup() {
     amountInput.type = 'text';
     amountInput.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
     amountInput.placeholder = '금액';
+    amountInput.setAttribute('inputmode', 'numeric');
     amountInput.oninput = function() {
       formatCurrency(this);
       updateTotal();
@@ -721,9 +722,9 @@ function updateAdmissionFee() {
 
   if (!membershipSelect || !admissionFeeInput) return;
 
-  let fee = 0;
+  let fee = '₩ ' +0;
   if (membershipSelect.value === "New") {
-    fee = 33000;
+    fee = '₩ ' +33000;
   }
 
   admissionFeeInput.value = fee.toLocaleString("ko-KR");
@@ -776,7 +777,7 @@ function updateMembershipFee(select) {
       case 12: fee = 429000; break;
       default: fee = 0;
     }
-    membershipFee.value = fee.toLocaleString('ko-KR');
+    membershipFee.value = '₩ ' + fee.toLocaleString('ko-KR');
     calculateTotal(); // Added to update total on membership fee change
   }
 }
@@ -804,7 +805,7 @@ function showDiscountPopup() {
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     z-index: 1000;
-    min-width: 400px;
+    min-width: 250px;
     font-size: 16px; /* Increased font size */
   `;
 
@@ -851,6 +852,7 @@ function showDiscountPopup() {
     input.type = 'text';
     input.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; font-size: 16px;';
     input.placeholder = '금액 입력 (₩)';
+    input.setAttribute('inputmode', 'numeric');
     input.oninput = function() { formatCurrency(this); };
     input.onkeypress = function(e) {
       if (e.key === 'Enter') {

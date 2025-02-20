@@ -147,7 +147,7 @@
       <div
         style="display: flex; align-items: center; gap: 0px; justify-content: flex-end; margin-top: 20px; margin-bottom: 10px;">
         <p style="padding-left: 0px; margin-bottom: -5px;"><i class="fa-solid fa-circle-info icon"></i>계약담당</p>
-        <input type="text" name="contract_manager" class="thisbox" style="width: 30%; height: 30px; margin-top: 10px;">
+        <input type="text" name="contract_manager" class="thisbox" style="width: 30%; height: 30px; margin-top: 10px; margin-left: 5px;">
       </div>
     </div>
     <hr>
@@ -163,7 +163,7 @@
         <div>
           <p><i class="fa-solid fa-bowling-ball icon"></i>연락처</p>
           <input type="text" name="contact" id="contact" maxlength="20" class="thisbox" placeholder="000-0000-0000"
-            oninput="formatPhoneNumber(this)" lang="ko" inputmode="tel">
+            oninput="formatPhoneNumber(this)" lang="ko" inputmode="numeric">
           <script>
             // Auto-fill verified phone number
             window.onload = function () {
@@ -186,7 +186,7 @@
         <div class="birthdate-group">
           <p><i class="fa-solid fa-volleyball icon"></i>생년월일</p>
           <input type="text" name="birthdate" id="birthdate" maxlength="10" class="thisbox"
-            oninput="formatBirthdate(this)" placeholder="예: 20001010" lang="ko" inputmode="numeric">
+            oninput="formatBirthdate(this)" placeholder="20001010" lang="ko" inputmode="numeric">
         </div>
       </div>
 
@@ -220,7 +220,7 @@
         <div style="flex: 0.5;">
           <p><i class="fa-solid fa-universal-access icon"></i>운동복 대여</p>
           <div style="display: flex; gap: 0px;">
-            <select name="rental_months" id="rental_months" class="thisbox" style="width: 50%;"
+            <select name="rental_months" id="rental_months" class="thisbox" style="width: 50%; padding-left:5px;"
               onchange="updateRentalPrice(this)">
               <option value="">선택</option>
               <option value="1">1개월</option>
@@ -237,13 +237,13 @@
               <option value="12">12개월</option>
             </select>
             <input type="text" name="rental_price" id="rental_price" class="thisbox" placeholder=""
-              style="width: 50%; background-color: #f5f5f5; margin-left: 5px;" readonly lang="ko" inputmode="numeric">
+              style="width: 50%; background-color: #f5f5f5; margin-left: 5px;padding-left: 5px;" readonly lang="ko" inputmode="numeric">
           </div>
         </div>
         <div style="flex: 0.5;">
           <p><i class="fa-solid fa-circle-minus icon"></i>라커 대여</p>
           <div style="display: flex; gap: 0px;">
-            <select name="locker_months" id="locker_months" class="thisbox" style="width: 90px;"
+            <select name="locker_months" id="locker_months" class="thisbox" style="width: 90px; padding-left:5px;"
               onchange="updateLockerPrice(this)">
               <option value="">선택</option>
               <option value="1">1개월</option>
@@ -260,7 +260,7 @@
               <option value="12">12개월</option>
             </select>
             <input type="text" name="locker_price" id="locker_price" class="thisbox" placeholder=""
-              oninput="formatCurrency(this)" style="width: 45%; margin-left: 5px; background-color: #f5f5f5;" readonly lang="ko"
+              oninput="formatCurrency(this)" style="width: 45%; margin-left: 5px;padding-left: 5px; background-color: #f5f5f5;" readonly lang="ko"
               inputmode="numeric">
           </div>
         </div>
@@ -270,7 +270,7 @@
               <p style="display: inline-block; margin-left: -5px;"><i class="fa-solid fa-circle-check icon"></i>기간회비</p>
               <div style="display: flex; gap: 0px;">
                 <select name="membership_months" id="membership_months" class="thisbox"
-                  style="margin-left: 11px; width: 40%;" onchange="updateMembershipFee(this)">
+                  style="margin-left: 11px; width: 40%;padding-left:5px;" onchange="updateMembershipFee(this)">
                   <option value="">기간</option>
                   <option value="1">1개월</option>
                   <option value="2">2개월</option>
@@ -405,7 +405,7 @@
                 </div>
                 <input type="text" name="receipt_phone" id="receipt_phone" class="thisbox"
                   style="width: 95%; height: 30px; margin-left: -5px;font-size: 12px;" placeholder="현금영수증 번호"
-                  oninput="formatPhoneNumber(this)" lang="ko" inputmode="tel">
+                  oninput="formatPhoneNumber(this)" lang="ko" inputmode="numeric">
               </div>
             </div>
             <!-- 복합결제 내역 -->

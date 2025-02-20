@@ -28,8 +28,8 @@ body {
   min-width: unset; /* 최소 너비 제한 해제 */
   background-color: white;
   border-radius: 20px;
-  margin: 20px auto;
-  padding: 5px 40px;
+  margin: 5px auto;
+  padding: 5px 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   min-height: calc(80vh);
   display: flex;
@@ -41,7 +41,6 @@ body {
 @media (min-width: 481px) and (max-width: 1300px) {
   .container {
     width: 100%;
-    padding: 10px 20px;
     touch-action: manipulation pinch-zoom;
   }
 
@@ -148,7 +147,7 @@ body, .container {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    gap: 20px;
+    gap: 5px;
     margin-right: 0px;
   }
 
