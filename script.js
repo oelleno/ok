@@ -25,10 +25,11 @@ function validateForm() {
 function downloadAsImage() {
   const container = document.querySelector('.container');
   html2canvas(container, {
-      backgroundColor: '#f5f5f5',
-      scale: 0.8
-    }).then(canvas => {
-    console.log("📸 html2canvas 실행 완료");
+    backgroundColor: '#f5f5f5',
+    scale: 1.0,
+    useCORS: true
+  }).then(canvas => {
+    console.log("📸 이미지 변환 완료");
 
     // Get current date in YYMMDD format
     const now = new Date();
@@ -43,8 +44,8 @@ function downloadAsImage() {
     // Get the docId from Firebase submission
     const dailyNumber = localStorage.getItem('current_doc_number');
     if (!dailyNumber) {
-        console.error('Document number not found');
-        return;
+      console.error('Document number not found');
+      return;
     }
 
     // Create filename using Firebase document number
@@ -52,17 +53,17 @@ function downloadAsImage() {
 
     // Convert canvas to blob and upload to Firebase Storage
     canvas.toBlob(async (blob) => {
-          try {
-            await window.uploadImage(fileName, blob);
+      try {
+        await window.uploadImage(fileName, blob);
 
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = fileName;
-            link.click();
-          } catch (error) {
-            console.error("이미지 업로드 실패:", error);
-          }
-        }, 'image/jpeg');
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+      } catch (error) {
+        console.error("이미지 업로드 실패:", error);
+      }
+    }, 'image/jpeg');
 
     const overlay = document.createElement('div');
     overlay.style.cssText = `
@@ -88,56 +89,67 @@ function downloadAsImage() {
       box-shadow: 0 0 20px rgba(0,0,0,0.4);
       z-index: 1000;
       text-align: center;
-      min-width: 500px;
-      min-height: 400px;
-`;
-
-    const chatImage = document.createElement('img');
-    chatImage.src = './BDSR.png';
-    chatImage.style.maxWidth = '300px';
-    chatImage.style.cursor = 'pointer';
-
-    const closeBtn = document.createElement('button');
-    closeBtn.innerHTML = '창닫기 버튼 수정예정';
-    closeBtn.style.cssText = `
-   margin-top: 10px;
-    padding: 5px 20px;
-    background: white; /* 버튼 배경을 흰색으로 설정 */
-    color: black; /* 글자 색상을 검정으로 설정 */
-    border: 2px solid #03C75A; /* 테두리를 네이버 녹색(#03C75A)으로 설정 */
-    border-radius: 5px; /* 둥근 모서리 적용 */
-    cursor: pointer;
-    font-weight: bold; /* 글씨를 굵게 설정 */
-    font-size: 16px; /* 글자 크기 조정 */
+      min-width: 300px;
+      min-height: 250px;
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     `;
 
-    const codeBtn = document.createElement('button');
-    codeBtn.textContent = '엑셀 업데이트';
-    codeBtn.onclick = function() { submitqqForm(); };
-    codeBtn.style.cssText = `
-    margin-top: 10px;
-    padding: 5px 20px;
-    background: #03C75A;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 16px;
-    margin-bottom: 10px;
+    const statusText = document.createElement('h3');
+    statusText.textContent = '계약서 업로드 중...';
+    statusText.style.cssText = `
+      margin-top: 0px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap; /* 줄바꿈 방지 */
     `;
+    popup.appendChild(statusText);
 
+    setTimeout(() => {
+      statusText.textContent = '계약서 업로드 완료!';
+      setTimeout(() => {
+        statusText.textContent = '계약서URL 저장 완료!';
+        setTimeout(() => {
+          statusText.style.display = 'none';
 
-    popup.appendChild(chatImage);
-    popup.appendChild(codeBtn);
-    popup.appendChild(closeBtn);
+          // Create receipt button
+          const receiptBtn = document.createElement('button');
+          receiptBtn.textContent = '영수증 저장';
+          receiptBtn.onclick = function() {
+            if (!window.docId) {
+              alert('계약서 번호를 찾을 수 없습니다.');
+              return;
+            }
+            localStorage.setItem('receipt_doc_id', window.docId);
+            //  Add code here to save receipt URL to database
+            window.location.href = 'receipt.html';
+          };
+          receiptBtn.style.cssText = `
+            margin-top: 0px;
+            padding: 10px 20px;
+            background: #0078D7;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+          `;
+          popup.appendChild(receiptBtn);
+
+        }, 1000);
+      }, 1000);
+    }, 1000);
+
     document.body.appendChild(popup);
     console.log("🎉 팝업 생성 완료");
 
-    closeBtn.onclick = () => {
-      document.body.removeChild(overlay);
-      document.body.removeChild(popup);
-    };
+
   }).catch(error => {
     console.error("❌ html2canvas 실행 중 오류 발생:", error);
   });
@@ -203,6 +215,7 @@ document.addEventListener('DOMContentLoaded', function() {
     border - radius: 10px;
     box - shadow: 0 0 10px rgba(0, 0, 0, 0.3);
     z - index: 1000;
+    font-size: 16px; /* Increased font size */
     `;
 
       const overlay = document.createElement('div');
@@ -232,6 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
     color: white;
     border - radius: 5px;
     cursor: pointer;
+    font-size: 16px; /* Increased font size */
     `;
 
       popup.appendChild(popupCanvas);
@@ -465,15 +479,15 @@ function handleWorkoutTimeChange(checkbox) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const timeSelects = document.querySelectorAll('select[data-workout-time]');
-    timeSelects.forEach(select => {
-        select.addEventListener('change', () => handleTimeSelect(select));
-    });
+  const timeSelects = document.querySelectorAll('select[data-workout-time]');
+  timeSelects.forEach(select => {
+    select.addEventListener('change', () => handleTimeSelect(select));
+  });
 
-    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="workout_time"]');
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', () => handleWorkoutTimeChange(checkbox));
-    });
+  const checkboxes = document.querySelectorAll('input[type="checkbox"][name="workout_time"]');
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', () => handleWorkoutTimeChange(checkbox));
+  });
 });
 
 
@@ -531,7 +545,7 @@ function updatePaymentSummary() {
         unpaidField.value = '결제예정 ₩' + (unpaidAmount > 0 ? unpaidAmount.toLocaleString('ko-KR') : '0');
         unpaidField.style.backgroundColor = unpaidAmount > 0 ? '#ffebeb' : '#f5f5f5';
       }
-    } 
+    }
   }
 }
 
@@ -548,6 +562,7 @@ function showCardPaymentPopup() {
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     z-index: 1000;
     min-width: 500px;
+    font-size: 16px; /* Increased font size */
   `;
 
   const overlay = document.createElement('div');
@@ -574,6 +589,7 @@ function showCardPaymentPopup() {
     border-radius: 5px;
     text-align: right;
     font-weight: bold;
+    font-size: 16px; /* Increased font size */
   `;
   totalDisplay.textContent = '합계: ₩ 0';
 
@@ -605,12 +621,12 @@ function showCardPaymentPopup() {
 
     const descInput = document.createElement('input');
     descInput.type = 'text';
-    descInput.style.cssText = 'flex: 2; padding: 5px; border-radius: 5px; border: 1px solid #ccc;';
+    descInput.style.cssText = 'flex: 2; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
     descInput.placeholder = '결제 내용';
 
     const amountInput = document.createElement('input');
     amountInput.type = 'text';
-    amountInput.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; border: 1px solid #ccc;';
+    amountInput.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 16px;';
     amountInput.placeholder = '금액';
     amountInput.oninput = function() {
       formatCurrency(this);
@@ -668,6 +684,7 @@ function showCardPaymentPopup() {
     border-radius: 5px;
     cursor: pointer;
     float: right;
+    font-size: 16px; /* Increased font size */
   `;
 
   confirmButton.onclick = function() {
@@ -751,7 +768,7 @@ function updateMembershipFee(select) {
   const membershipFee = document.getElementById('membership_fee');
   if (membershipFee) {
     let fee = 0;
-    switch(parseInt(select.value)) {
+    switch (parseInt(select.value)) {
       case 1: fee = 99000; break;
       case 2: fee = 154000; break;
       case 3: fee = 198000; break;
@@ -788,6 +805,7 @@ function showDiscountPopup() {
     box-shadow: 0 0 20px rgba(0,0,0,0.3);
     z-index: 1000;
     min-width: 400px;
+    font-size: 16px; /* Increased font size */
   `;
 
   const overlay = document.createElement('div');
@@ -812,7 +830,7 @@ function showDiscountPopup() {
     row.style.alignItems = 'center';
 
     const select = document.createElement('select');
-    select.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px;';
+    select.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; font-size: 16px;';
     select.innerHTML = `
       <option value="">할인 항목 선택</option>
       <option value="운동복">운동복 할인</option>
@@ -822,7 +840,7 @@ function showDiscountPopup() {
 
     const itemInput = document.createElement('input');
     itemInput.type = 'text';
-    itemInput.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; display: none;';
+    itemInput.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; display: none; font-size: 16px;';
     itemInput.placeholder = '할인 항목 입력';
 
     select.onchange = function() {
@@ -831,7 +849,7 @@ function showDiscountPopup() {
 
     const input = document.createElement('input');
     input.type = 'text';
-    input.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px;';
+    input.style.cssText = 'flex: 1; padding: 5px; border-radius: 5px; font-size: 16px;';
     input.placeholder = '금액 입력 (₩)';
     input.oninput = function() { formatCurrency(this); };
     input.onkeypress = function(e) {
@@ -879,6 +897,7 @@ function showDiscountPopup() {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    font-size: 16px; /* Increased font size */
   `;
   addButton.onclick = addDiscountRow;
 
@@ -893,6 +912,7 @@ function showDiscountPopup() {
     border-radius: 5px;
     cursor: pointer;
     margin-left: 10px;
+    font-size: 16px; /* Increased font size */
   `;
 
   confirmButton.onclick = function() {

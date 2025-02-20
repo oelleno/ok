@@ -16,7 +16,7 @@ const firebaseConfig = {
 
 // Firebase 초기화
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 // 가입 완료 버튼 클릭 시 실행될 함수
@@ -70,7 +70,7 @@ async function submitForm() {
 
             // 저장할 데이터
             const userData = {
-                docId: docId,
+                docId: window.docId,
                 name: name,
                 contact: contact,
                 birthdate: birthdate,
@@ -137,23 +137,41 @@ async function submitForm() {
     });
 }
 
+// irebase Storage에 업로드
 // HTML에서 호출할 수 있도록 전역 함수로 설정
-// Image upload function
 async function uploadImage(fileName, blob) {
     try {
-        const { ref, uploadBytes, getDownloadURL } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js");
-        const storageRef = ref(storage, `회원가입계약서/${fileName}`);
-        await uploadBytes(storageRef, blob);
-        console.log("Firebase Storage 업로드 완료!");
+        const { getStorage, ref, uploadBytes, getDownloadURL } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js");
+        const { getFirestore, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js");
 
+        const storage = getStorage(); // Firebase Storage 인스턴스 가져오기
+        const db = getFirestore(); // Firestore 인스턴스 가져오기
+
+        // 🔹 Firebase Storage 경로 설정 및 업로드
+        const storageRef = ref(storage, `회원가입계약서/${window.docId}/${fileName}`);
+        await uploadBytes(storageRef, blob);
+        console.log("✅ Firebase Storage 업로드 완료!");
+
+        // 🔹 업로드된 파일의 다운로드 URL 가져오기
         const downloadURL = await getDownloadURL(storageRef);
-        console.log("Firebase URL:", downloadURL);
-        return downloadURL;
+        console.log("🔗 Firebase Storage 이미지 URL:", downloadURL);
+
+        // 🔹 Firestore에 URL 저장 (window.docId 사용)
+        if (window.docId) {
+            const docRef = doc(db, "회원가입계약서", window.docId);
+            await updateDoc(docRef, { imageUrl: downloadURL });
+            console.log("✅ Firestore에 이미지 URL 저장 완료:", downloadURL);
+        } else {
+            console.error("❌ Firestore 문서 ID(window.docId)가 제공되지 않음.");
+        }
+
+        return downloadURL; // Firebase Storage URL 반환 (프론트엔드에서 활용 가능)
     } catch (error) {
-        console.error("Firebase Storage 업로드 실패:", error);
+        console.error("❌ Firebase Storage 업로드 실패:", error);
         throw error;
     }
 }
+
 
 window.submitForm = submitForm;
 window.uploadImage = uploadImage;
