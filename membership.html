@@ -129,10 +129,10 @@
   <div class="container">
     <div class="header-container">
       <div style="display: flex; align-items: center;">
-        <img src="./BDST.png" alt="Logo" style="height: 50px; margin-right: 20px;">
-        <div style="display: flex; align-items: center; gap: 10px; margin-left: 30px; margin-top: 20px;">
+        <img src="./BDST.png" alt="Logo" style="height: 50px; margin-right: 0px;">
+        <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px; margin-top: 20px;">
           <i class="fa-brands fa-gg-circle icon" style="color: #000000;"></i>
-          <select name="branch" id="branch" class="thisbox" style="width: 120px; height: 30px; margin-left: -5px;">
+          <select name="branch" id="branch" class="thisbox" style="width: 100px; height: 30px; margin-left: -5px;">
             <option value="">지점 선택</option>
             <option value="용문가장점">용문가장점</option>
             <option value="관저점">관저점</option>
@@ -143,10 +143,10 @@
           style="font-size: 14px; font-weight: bold; display: block; width: 100%;">Membership Agreement</span></h2>
 
       <div
-        style="display: flex; align-items: center; gap: 0px; margin-left: 30px; margin-top: 20px; margin-bottom: 10px;">
+        style="display: flex; align-items: center; gap: 0px; justify-content: flex-end; margin-top: 20px; margin-bottom: 10px;">
         <p style="padding-left: 0px; margin-bottom: -5px;"><i class="fa-solid fa-circle-info icon"></i>계약담당</p>
         <input type="text" name="contract_manager" class="thisbox"
-          style="width: 120px; height: 30px; margin-top: 10px;">
+          style="width: 30%; height: 30px; margin-top: 10px;">
       </div>
     </div>
     <hr>
@@ -269,7 +269,7 @@
               <p style="display: inline-block; margin-left: -5px;"><i class="fa-solid fa-circle-check icon"></i>기간회비</p>
               <div style="display: flex; gap: 0px;">
                 <select name="membership_months" id="membership_months" class="thisbox"
-                  style="margin-left: 11px; width: 90px;" onchange="updateMembershipFee(this)">
+                  style="margin-left: 11px; width: 30%;" onchange="updateMembershipFee(this)">
                   <option value="">기간</option>
                   <option value="1">1개월</option>
                   <option value="2">2개월</option>
@@ -278,7 +278,7 @@
                   <option value="12">12개월</option>
                 </select>
                 <input type="text" name="membership_fee" id="membership_fee" class="thisbox"
-                  style="width: 102px; height: 35px; background-color: #f5f5f5;" placeholder="" readonly lang="ko"
+                  style="width: 50%; height: 35px; background-color: #f5f5f5;" placeholder="" readonly lang="ko"
                   inputmode="numeric">
               </div>
             </div>
@@ -296,7 +296,7 @@
         <div style="flex: 1;">
           <p><i class="fa-solid fa-record-vinyl icon"></i>운동목적</p>
           <div class="goal-group"
-            style="border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin: 0 0px 0px 15px;">
+            style="border: 1px solid #ccc; padding: 7px; border-radius: 10px; margin: 0 0px 0px 15px;">
             <label><input type="checkbox" name="goal" value="다이어트"> 다이어트</label>
             <label><input type="checkbox" name="goal" value="근육증가"> 근육증가</label>
             <label><input type="checkbox" name="goal" value="체형교정"> 체형교정</label>
@@ -304,12 +304,12 @@
             <div style="margin-top: 0px; display: flex; align-items: center; gap: 0px;">
               <label style="min-width: 50px; font-size: 14px;"><input type="checkbox" name="goal" value="기타"> 기타</label>
               <input type="text" name="other" id="other" class="thisbox"
-                style="margin-bottom: 0; width: 330px; height: 25px;  margin-left: 0px;" placeholder="기타 입력" lang="ko"
+                style="margin-bottom: 0; width: 120%; height: 25px;  margin-left: 0px;" placeholder="기타 입력" lang="ko"
                 inputmode="text">
             </div>
           </div>
           <p style="margin-top: 15px;"><i class="fa-solid fa-clock icon"></i>운동시간</p>
-          <div style="border: 1px solid #ccc; padding: 10px; border-radius: 10px; margin: 0 0px 10px 15px;">
+          <div style="border: 1px solid #ccc; padding: 7px; border-radius: 10px; margin: 0 0px 10px 15px;">
             <div style="display: flex; align-items: center; gap: 1px;">
               <label style="display: flex; align-items: center; gap: 5px; font-size: 14px;">
                 <select name="morning_hour" class="time-input">
@@ -369,7 +369,7 @@
                   <option value="23">23시</option>
                   <option value="24">24시</option>
                 </select>
-                <input type="text" class="time-input" style="width: 200px;" placeholder="추가 입력" lang="ko"
+                <input type="text" class="time-input" style="width: 100%;" placeholder="추가 입력" lang="ko"
                   inputmode="text">
               </label>
             </div>
@@ -457,7 +457,7 @@
 
       <div class="section" style="margin-top: -10px;">
         <p><i class="fa-solid fa-compass icon"></i>가입경로</p>
-        <div style="padding: 5px 10px; margin: 0 0px 10px 15px; border: 1px solid #ccc; border-radius: 10px;">
+        <div style="padding: 5px 7px; margin: 0 0px 10px 15px; border: 1px solid #ccc; border-radius: 10px;">
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;">
             <label style="font-size: 14px; white-space: nowrap;"><input type="checkbox" name="referral" value="간판">
               간판</label>

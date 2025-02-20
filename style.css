@@ -94,7 +94,7 @@ body, .container {
   }
 
   p {
-    font-size: 15px;
+    font-size: 14px;
     color: #000000;
     font-weight: bold;
     padding-left: 10px;
@@ -173,10 +173,9 @@ body, .container {
   .goal-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    /* gap 15px 유지 */
+    gap: 5px;
     align-items: center;
-    /* align-items 유지 */
+    width: 90%;
   }
 
 
@@ -187,6 +186,19 @@ body, .container {
     align-items: center;
     gap: 0px;
     margin-bottom: 1px;
+    margin-right: 5px;
+  }
+
+  input[type="checkbox"] {
+    width: 12px;
+    height: 12px;
+    margin-right: 3px;
+  }
+
+  input[type="radio"] {
+    width: 12px;
+    height: 12px;
+    margin-right: 3px;
   }
 
   .goal-group input[type="text"] {
@@ -300,7 +312,7 @@ body, .container {
   /* Icon styling */
   .fa-solid,
   .fa-brands {
-    font-size: 19px;
+    font-size: 15px;
     margin-right: 5px;
     margin-left: 5px;
   }
