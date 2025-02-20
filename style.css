@@ -4,32 +4,28 @@
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;
-  /* 텍스트복사방지 */
+  user-select: none;   /* 텍스트복사방지 */
 }
+
 
 body {
   width: 100vw;
-  /* 뷰포트(화면)의 전체 너비를 차지 */
   height: 100%;
-  /* 최소 높이를 100%로 설정 */
   font-family: "Nunito Sans", sans-serif;
   color: #273444;
   background-color: #f8f9fa;
   margin: 0;
   padding: 0;
-  overflow-y: auto;
-  /* 세로 스크롤 허용 */
-  -webkit-overflow-scrolling: touch;
-  /* iOS 스크롤 개선 */
+  overflow-y: auto;  /* 세로 스크롤 허용 */
+  overflow-x: hidden; /* 가로 스크롤 방지 */
+  touch-action: manipulation; /* 기본 터치 동작 허용 */
+  -webkit-overflow-scrolling: touch; /* iOS에서 부드러운 스크롤 */
 }
 
 .container {
   width: 100%;
-  max-width: 100%;
-  /* 화면 크기에 맞게 조정 */
-  min-width: 320px;
-  /* 최소 크기 설정 */
+  max-width: 100%;   /* 화면 크기에 맞게 조정 */
+  min-width: unset; /* 최소 너비 제한 해제 */
   background-color: white;
   border-radius: 20px;
   margin: 20px auto;
@@ -42,7 +38,7 @@ body {
 }
 
 /* 2. 태블릿에서 비율 유지하면서 꽉 차게/ Teclast P50 = 1280x800/*/
-@media (min-width: 768px) and (max-width: 2560px) {
+@media (min-width: 480px) and (max-width: 2560px) {
   .container {
     width: 100%;
     padding: 10px 20px;
@@ -55,14 +51,11 @@ body {
     }
   }
   /* 3. 모바일(768px 이하)에서만 원래 크기로 유지 */
-  @media (max-width: 767px) {
+  @media (max-width: 480px) {
     .container {
-      width: 1000px;
-      /* 원래 크기 고정 */
-      max-width: unset;
-      /* 최대 너비 제한 해제 */
-      min-width: unset;
-      /* 최소 너비 제한 해제 */
+      width: 1000px;       /* 원래 크기 고정 */
+      max-width: unset;      /* 최대 너비 제한 해제 */
+      min-width: unset;      /* 최소 너비 제한 해제 */
     }
   }
 
