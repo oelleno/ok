@@ -45,27 +45,18 @@ body {
 }
 
 /* 2. 태블릿에서 비율 유지하면서 꽉 차게/ Teclast P50 = 1280x800/*/
-/* 태블릿 환경 (481px ~ 1500px)에서 전체 90% 축소 */
 @media (min-width: 481px) and (max-width: 1500px) {
-  body {
-    transform: scale(0.9); /* 전체 화면 90% 축소 */
-    transform-origin: top center; /* 축소 중심 상단 가운데 */
-    zoom: 0.9; /* 입력창, 버튼, 글씨까지 모두 축소 */
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden; /* 가로 스크롤 방지 */
-  }
-
-  /* 컨테이너 및 내부 요소 축소 */
   .container {
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 10px 20px;
-    box-sizing: border-box;
+    padding: 5px 10px;
+    touch-action: manipulation pinch-zoom;
+  }
+
+  body {
+    touch-action: pan-x pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
   }
 }
-
 
 /* 3. 모바일(768px 이하)에서만 원래 크기로 유지 */
 @media (max-width: 480px) {
