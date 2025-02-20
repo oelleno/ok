@@ -2,6 +2,8 @@
 <html lang="ko" data-bs-theme="dark">
 <!-- Firebase 관련 설정 파일 -->
 <script type="module" src="./firebase.js"></script>
+<script type="module" src="./excel.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
 
 <head>
   <meta charset="UTF-8">
@@ -159,9 +161,10 @@
     <div class="d-flex align-items-center justify-content-center mb-4 gap-3">
       <h2 class="m-0">영수증 관리</h2>
       <button class="add-receipt-btn btn btn-primary btn-contract" id="add-receipt-btn">+</button>
+      <button type="button" id="excel-upload-btn" class="btn btn-primary btn-contract" style="margin-left: 20px; min-width: 150px; min-height: 50px;">최종업로드</button>
     </div>
 
-    <div class="receipts-grid">
+    <div class="receipts-grid" id="receipts-grid">
       <div class="receipt-container">
         <div class="receipt-box" data-index="1">
           <button class="capture-btn"><i class="bi bi-camera"></i></button>
@@ -192,139 +195,147 @@
   </div>
 
   <script type="module">
-let currentReceiptBox = null;
-let stream = null;
-import { storage, db } from "./firebase.js";
-import { ref, uploadString, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js";
-import { doc, updateDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
-      // Get docId from localStorage when page loads
-      function initializeDocId() {
-        const storedDocId = localStorage.getItem('receipt_doc_id');
-        if (!storedDocId) {
-          alert('계약서 번호를 찾을 수 없습니다.');
-          window.location.href = 'index.html';
-          return;
-        }
-        window.docId = storedDocId;
-        console.log("현재 docId:", window.docId);
+    let currentReceiptBox = null;
+    let stream = null;
+    import { storage, db } from "./firebase.js";
+    import { doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+    import { ref, uploadString, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js";
+
+    // Get docId from localStorage when page loads
+    function initializeDocId() {
+      const storedDocId = localStorage.getItem('receipt_doc_id');
+      if (!storedDocId) {
+        alert('계약서 번호를 찾을 수 없습니다.');
+        window.location.href = 'index.html';
+        return;
       }
-      initializeDocId();
+      window.docId = storedDocId;
+      console.log("현재 docId:", window.docId);
+    }
+    initializeDocId();
 
-// 영수증 추가 버튼 이벤트 설정
-document.getElementById('add-receipt-btn').addEventListener('click', createReceiptContainer);
+    // 영수증 추가 버튼 이벤트 설정
+    document.getElementById('add-receipt-btn').addEventListener('click', createReceiptContainer);
 
-// 초기 카메라 버튼 이벤트 설정
-document.querySelectorAll('.capture-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
+    // 초기 카메라 버튼 이벤트 설정
+    document.querySelectorAll('.capture-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
         currentReceiptBox = this.closest('.receipt-box');
         openCamera();
+      });
     });
-});
 
-// 카메라 열기 함수
-async function openCamera() {
-    const modal = document.querySelector('.camera-modal');
-    const video = document.getElementById('camera-view');
+    // 카메라 열기 함수
+    async function openCamera() {
+      const modal = document.querySelector('.camera-modal');
+      const video = document.getElementById('camera-view');
 
-    try {
+      try {
         stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: 'environment' },
-            audio: false
+          video: { facingMode: 'environment' },
+          audio: false
         });
         video.srcObject = stream;
         modal.style.display = 'flex';
-    } catch (err) {
+      } catch (err) {
         console.error('카메라 접근 오류:', err);
         alert('카메라를 시작할 수 없습니다.');
+      }
     }
-}
 
-// 촬영 버튼 클릭 시 이미지 캡처
-document.getElementById('capture-btn').addEventListener('click', () => {
-    const video = document.getElementById('camera-view');
-    const canvas = document.getElementById('preview-canvas');
-    const context = canvas.getContext('2d');
+    // 촬영 버튼 클릭 시 이미지 캡처
+    document.getElementById('capture-btn').addEventListener('click', () => {
+      const video = document.getElementById('camera-view');
+      const canvas = document.getElementById('preview-canvas');
+      const context = canvas.getContext('2d');
 
-    const videoWidth = video.videoWidth;
-    const videoHeight = video.videoHeight;
-    const aspectRatio = videoWidth / videoHeight;
+      const videoWidth = video.videoWidth;
+      const videoHeight = video.videoHeight;
+      const aspectRatio = videoWidth / videoHeight;
 
-    const maxWidth = 380;
-    const maxHeight = 510;
+      const maxWidth = 380;
+      const maxHeight = 510;
 
-    if (maxWidth / aspectRatio <= maxHeight) {
+      if (maxWidth / aspectRatio <= maxHeight) {
         canvas.width = maxWidth;
         canvas.height = maxWidth / aspectRatio;
-    } else {
+      } else {
         canvas.width = maxHeight * aspectRatio;
         canvas.height = maxHeight;
-    }
+      }
 
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    document.querySelector('.camera-container').style.display = 'none';
-    document.querySelector('.preview-container').style.display = 'block';
-});
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      document.querySelector('.camera-container').style.display = 'none';
+      document.querySelector('.preview-container').style.display = 'block';
+    });
 
-// 저장 버튼 클릭 시 이미지 저장
-document.getElementById('save-btn').addEventListener('click', () => {
-    const canvas = document.getElementById('preview-canvas');
-    const timestamp = new Date().toLocaleString('ko-KR', {
+    // 저장 버튼 클릭 시 이미지 저장
+    document.getElementById('save-btn').addEventListener('click', () => {
+      const canvas = document.getElementById('preview-canvas');
+      const timestamp = new Date().toLocaleString('ko-KR', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit',
         hour12: true
-    }).replace(' ', '');
+      }).replace(' ', '');
 
-    const img = document.createElement('img');
-    img.src = canvas.toDataURL('image/jpeg');
-    img.style.borderRadius = '8px';
+      const img = document.createElement('img');
+      img.src = canvas.toDataURL('image/jpeg');
+      img.style.borderRadius = '8px';
 
-    const time = document.createElement('div');
-    time.textContent = timestamp;
-    time.style.position = 'absolute';
-    time.style.bottom = '10px';
-    time.style.left = '15px';
-    time.style.color = 'white';
-    time.style.fontSize = '10px';
-    time.style.background = 'rgba(0,0,0,0.5)';
-    time.style.padding = '9px 10px';
-    time.style.borderRadius = '4px';
-    time.style.display = 'flex';
-    time.style.alignItems = 'center';
+      const time = document.createElement('div');
+      time.textContent = timestamp;
+      time.style.position = 'absolute';
+      time.style.bottom = '10px';
+      time.style.left = '15px';
+      time.style.color = 'white';
+      time.style.fontSize = '10px';
+      time.style.background = 'rgba(0,0,0,0.5)';
+      time.style.padding = '9px 10px';
+      time.style.borderRadius = '4px';
 
-    currentReceiptBox.innerHTML = '';
-    currentReceiptBox.appendChild(img);
-    currentReceiptBox.appendChild(time);
+time.style.display = 'flex';
+      time.style.alignItems = 'center';
 
-    const captureBtn = document.createElement('button');
-    captureBtn.className = 'capture-btn';
-    captureBtn.innerHTML = '<i class="bi bi-camera"></i>';
-    captureBtn.addEventListener('click', function() {
+      currentReceiptBox.innerHTML = '';
+      currentReceiptBox.appendChild(img);
+      currentReceiptBox.appendChild(time);
+
+      const captureBtn = document.createElement('button');
+      captureBtn.className = 'capture-btn';
+      captureBtn.innerHTML = '<i class="bi bi-camera"></i>';
+      captureBtn.addEventListener('click', function() {
         currentReceiptBox = this.closest('.receipt-box');
         openCamera();
+      });
+      currentReceiptBox.appendChild(captureBtn);
+
+      closeCamera();
     });
-    currentReceiptBox.appendChild(captureBtn);
 
-    closeCamera();
-});
+    // 다시 촬영 버튼 클릭 시
+    document.getElementById('retake-btn').addEventListener('click', () => {
+      document.querySelector('.camera-container').style.display = 'block';
+      document.querySelector('.preview-container').style.display = 'none';
+    });
 
-// 다시 촬영 버튼 클릭 시
-document.getElementById('retake-btn').addEventListener('click', () => {
-    document.querySelector('.camera-container').style.display = 'block';
-    document.querySelector('.preview-container').style.display = 'none';
-});
+    // 카메라 닫기 버튼 클릭 시
+    document.getElementById('close-camera').addEventListener('click', closeCamera);
 
-// 카메라 닫기 버튼 클릭 시
-document.getElementById('close-camera').addEventListener('click', closeCamera);
-
-// 영수증 추가 함수
-function createReceiptContainer() {
-    const container = document.createElement('div');
-    container.className = 'receipt-container';
-    container.innerHTML = `
-        <div class="receipt-box" data-index="${document.querySelectorAll('.receipt-container').length + 1}">
+    // 영수증 추가 함수
+    function createReceiptContainer() {
+      const receiptsGrid = document.getElementById('receipts-grid');
+      const existingReceipts = receiptsGrid.querySelectorAll('.receipt-container').length;
+      if (existingReceipts >= 6) {
+        alert("영수증은 최대 6개까지 추가할 수 있습니다.");
+        return;
+      }
+      const container = document.createElement('div');
+      container.className = 'receipt-container';
+      container.innerHTML = `
+        <div class="receipt-box" data-index="${existingReceipts + 1}">
             <button class="capture-btn"><i class="bi bi-camera"></i></button>
         </div>
         <div class="note-wrapper">
@@ -333,104 +344,109 @@ function createReceiptContainer() {
         </div>
     `;
 
-    container.querySelector('.capture-btn').addEventListener('click', function() {
+      container.querySelector('.capture-btn').addEventListener('click', function() {
         currentReceiptBox = this.closest('.receipt-box');
         openCamera();
-    });
+      });
 
-    document.querySelector('.receipts-grid').appendChild(container);
-}
-
-// 카메라 닫기 함수
-function closeCamera() {
-    const modal = document.querySelector('.camera-modal');
-    modal.style.display = 'none';
-    if (stream) {
-        stream.getTracks().forEach(track => track.stop());
+      receiptsGrid.appendChild(container);
     }
-    document.querySelector('.camera-container').style.display = 'block';
-    document.querySelector('.preview-container').style.display = 'none';
-}
 
-// 노트 저장 버튼 이벤트
-document.addEventListener('click', async function(event) {
-    if (!event.target.classList.contains('save-note-btn')) return;
+    // 카메라 닫기 함수
+    function closeCamera() {
+      const modal = document.querySelector('.camera-modal');
+      modal.style.display = 'none';
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+      document.querySelector('.camera-container').style.display = 'block';
+      document.querySelector('.preview-container').style.display = 'none';
+    }
 
-    const btn = event.target;
-    const noteArea = btn.previousElementSibling;
-    let noteText = noteArea.value.trim() || '내용없음';
-    noteText = noteText.replace(/[^a-zA-Z0-9가-힣]/g, "_");
+    // 노트 저장 버튼 이벤트
+    document.addEventListener('click', async function(event) {
+      if (!event.target.classList.contains('save-note-btn')) return;
 
-    const receiptBox = btn.closest('.receipt-container').querySelector('.receipt-box');
-    const imgElement = receiptBox.querySelector('img');
+      const btn = event.target;
+      const noteArea = btn.previousElementSibling;
+      let noteText = noteArea.value.trim() || '내용없음';
+      noteText = noteText.replace(/[^a-zA-Z0-9가-힣]/g, "_");
 
-    if (!imgElement) {
+      const receiptBox = btn.closest('.receipt-container').querySelector('.receipt-box');
+      const imgElement = receiptBox.querySelector('img');
+
+      if (!imgElement) {
         alert("이미지를 먼저 촬영하세요!");
         return;
-    }
+      }
 
-    btn.textContent = '저장 중...';
-    btn.disabled = true;
+      btn.textContent = '저장 중...';
+      btn.disabled = true;
 
-    const today = new Date();
-    const year = String(today.getFullYear()).slice(2);
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    const datePrefix = `${year}${month}${day}`;
+      const today = new Date();
+      const year = String(today.getFullYear()).slice(2);
+      const month = String(today.getMonth() + 1).padStart(2, "0");
+      const day = String(today.getDate()).padStart(2, "0");
+      const datePrefix = `${year}${month}${day}`;
 
-    const receiptIndex = receiptBox.dataset.index || "1";
-    const fileName = `${datePrefix}_R${receiptIndex}_${noteText}.jpg`;
-    if (!window.docId) {
+      const receiptIndex = receiptBox.dataset.index || "1";
+      const fileName = `${datePrefix}_R${receiptIndex}_${noteText}.jpg`;
+      if (!window.docId) {
         alert('계약서 ID를 찾을 수 없습니다.');
         return;
-    }
-    const storagePath = `회원가입계약서/${window.docId}/${fileName}`;
-    const storageRef = ref(storage, storagePath);
+      }
+      const storagePath = `회원가입계약서/${window.docId}/${fileName}`;
+      const storageRef = ref(storage, storagePath);
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    img.src = imgElement.src;
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = imgElement.src;
 
-    await new Promise(resolve => {
+      await new Promise(resolve => {
         img.onload = () => {
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0, img.width, img.height);
-            resolve();
+          canvas.width = img.width;
+          canvas.height = img.height;
+          ctx.drawImage(img, 0, 0, img.width, img.height);
+          resolve();
         };
-    });
+      });
 
-    const imageData = canvas.toDataURL('image/jpeg').split(',')[1];
+      const imageData = canvas.toDataURL('image/jpeg').split(',')[1];
 
-    try {
+      try {
         await uploadString(storageRef, imageData, 'base64');
         const downloadURL = await getDownloadURL(storageRef);
-        
+
         // Update Firestore document with receipt URL
         const docRef = doc(db, "회원가입계약서", window.docId);
         await updateDoc(docRef, {
-            receipts: arrayUnion({
-                url: downloadURL,
-                filename: fileName,
-                timestamp: new Date().toISOString()
-            })
+          receipts: arrayUnion({
+            url: downloadURL,
+            filename: fileName,
+            timestamp: new Date().toISOString()
+          })
         });
-        
+
         btn.textContent = '저장완료';
         btn.disabled = true;
+
 
         const captureBtn = receiptBox.querySelector('.capture-btn');
         captureBtn.disabled = true;
         captureBtn.style.opacity = '0.5';
         captureBtn.style.cursor = 'not-allowed';
-    } catch (error) {
+      } catch (error) {
         console.error('이미지 저장 실패:', error);
         alert('이미지 저장에 실패했습니다.');
         btn.textContent = '저장';
         btn.disabled = false;
-    }
-});
+      }
+    });
   </script>
-  </body>
+  <script type="module">
+    import { excelupload } from './excel.js';
+    document.getElementById('excel-upload-btn').addEventListener('click', excelupload);
+  </script>
+</body>
 </html>
