@@ -103,7 +103,7 @@ body, .container {
   }
 
   .terms {
-    font-size: 10px;
+    font-size: 1.3vw;
     font-weight: lighter;
     margin-bottom: 0px;
     line-height: 1.2;
@@ -175,7 +175,7 @@ body, .container {
     row-gap: 10px; /* 위아래 간격 */
     column-gap: 2px; /* 좌우 간격 */
     align-items: center;
-    width: 98%;
+    width: 97%;
   }
 
 
