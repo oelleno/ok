@@ -7,7 +7,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2, user-scalable=yes">
   <title>영수증 관리</title>
   <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -231,10 +231,23 @@
       const video = document.getElementById('camera-view');
 
       try {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: 'environment' },
+        const constraints = {
+          video: {
+            facingMode: {exact: 'environment'},
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
           audio: false
-        });
+        };
+        try {
+          stream = await navigator.mediaDevices.getUserMedia(constraints);
+        } catch(err) {
+          // Fallback to any available camera if rear camera fails
+          stream = await navigator.mediaDevices.getUserMedia({
+            video: true,
+            audio: false
+          });
+        }
         video.srcObject = stream;
         modal.style.display = 'flex';
       } catch (err) {

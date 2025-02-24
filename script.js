@@ -722,9 +722,9 @@ function updateAdmissionFee() {
 
   if (!membershipSelect || !admissionFeeInput) return;
 
-  let fee = '₩ ' +0;
+  let fee = '₩ 0';
   if (membershipSelect.value === "New") {
-    fee = '₩ ' +33000;
+    fee = '₩ ' + (33000).toLocaleString('ko-KR');
   }
 
   admissionFeeInput.value = fee.toLocaleString("ko-KR");
