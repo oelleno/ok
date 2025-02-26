@@ -279,10 +279,24 @@
       document.querySelector('.preview-container').style.display = 'block';
     });
 
-    // 저장 버튼 클릭 시 이미지 저장
-    document.getElementById('save-btn').addEventListener('click', () => {
-      const canvas = document.getElementById('preview-canvas');
-      const timestamp = new Date().toLocaleString('ko-KR', {
+      // 저장 버튼 클릭 시 이미지 저장
+      document.getElementById('save-btn').addEventListener('click', () => {
+          const previewCanvas = document.getElementById('preview-canvas'); // 📌 프리뷰 캔버스
+
+          // 📌 프리뷰 캔버스 크기를 기준으로 이미지 저장
+          const finalCanvas = document.createElement('canvas');
+          finalCanvas.width = previewCanvas.width;
+          finalCanvas.height = previewCanvas.height;
+          const finalContext = finalCanvas.getContext('2d');
+
+          finalContext.drawImage(previewCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
+
+          // 이미지 요소 생성 및 표시
+          const img = document.createElement('img');
+          img.src = finalCanvas.toDataURL('image/jpeg'); // 🎯 **프리뷰와 동일한 크기**
+        img.style.borderRadius = '8px';
+      
+        const timestamp = new Date().toLocaleString('ko-KR', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
@@ -290,10 +304,6 @@
         minute: '2-digit',
         hour12: true
       }).replace(' ', '');
-
-      const img = document.createElement('img');
-      img.src = canvas.toDataURL('image/jpeg');
-      img.style.borderRadius = '8px';
 
       const time = document.createElement('div');
       time.textContent = timestamp;
