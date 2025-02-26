@@ -496,7 +496,7 @@
           트레이너 동반 없이 개인 운동 중 상해가 발생하게 되는 경우, 본 센터는 책임지지 않습니다.<br>
           <strong>9.지점이용</strong> <br>
           등록한 지점 외 다른 지점은 월 5회 이용 가능합니다.<br>
-        <div style="text-align: right; margin-top: -25px;">
+        <div style="text-align: right; margin-top-25px;">
           <label style="font-size: 14px;">
             <input type="checkbox" name="terms_agree" lang="ko" inputmode="checkbox"> <strong>위 약관에 동의합니다</strong>
           </label>
@@ -654,9 +654,11 @@
   </script>
   <div class="button-container">
     <button type="button" onclick="handleSubmit()" class="submitBtn">가입완료</button>
+    <button type="button" id="sendKakao" style="display: none;">카카오 발송</button>
     <div id="status" style="color: #4CAF50; margin-top: 10px; font-weight: bold;"></div>
     <script type="module" src="./firebase.js"></script>
+    <script type="module" src="./kakao2.js"></script>
   </div>
   </form>
   </div>
-  </body< /html>
+  </body</html>

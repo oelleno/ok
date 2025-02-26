@@ -134,8 +134,12 @@ function downloadAsImage() {
               alert('계약서 번호를 찾을 수 없습니다.');
               return;
             }
-            // Call sendKakao function
-            document.getElementById('sendKakao').click();
+            const sendKakaoBtn = document.getElementById('sendKakao');
+            if (!sendKakaoBtn) {
+              alert('카카오 발송 버튼을 찾을 수 없습니다.');
+              return;
+            }
+            sendKakaoBtn.click();
           };
           contractBtn.style.cssText = `
             padding: 10px 20px;
