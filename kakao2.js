@@ -73,3 +73,7 @@ document.getElementById('sendKakao').addEventListener('click', async () => {
     alert('알림톡 전송에 실패했습니다.');
   }
 });
+
+// 📌 click & touch 이벤트 추가
+document.getElementById('sendKakao').addEventListener('click', sendKakaoHandler);
+document.getElementById('sendKakao').addEventListener('touchstart', sendKakaoHandler);
