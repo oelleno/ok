@@ -117,6 +117,38 @@ function downloadAsImage() {
         setTimeout(() => {
           statusText.style.display = 'none';
 
+          // Create button container for vertical layout
+          const buttonContainer = document.createElement('div');
+          buttonContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+          `;
+
+          // Create contract copy button (sendKakao)
+          const contractBtn = document.createElement('button');
+          contractBtn.textContent = '계약서 사본발송';
+          contractBtn.onclick = function() {
+            if (!window.docId) {
+              alert('계약서 번호를 찾을 수 없습니다.');
+              return;
+            }
+            // Call sendKakao function
+            document.getElementById('sendKakao').click();
+          };
+          contractBtn.style.cssText = `
+            padding: 10px 20px;
+            background: #FEE500;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 200px;
+          `;
+
           // Create receipt button
           const receiptBtn = document.createElement('button');
           receiptBtn.textContent = '영수증 저장';
@@ -126,11 +158,9 @@ function downloadAsImage() {
               return;
             }
             localStorage.setItem('receipt_doc_id', window.docId);
-            //  Add code here to save receipt URL to database
             window.location.href = 'receipt.html';
           };
           receiptBtn.style.cssText = `
-            margin-top: 0px;
             padding: 10px 20px;
             background: #0078D7;
             color: white;
@@ -139,8 +169,12 @@ function downloadAsImage() {
             cursor: pointer;
             font-weight: bold;
             font-size: 16px;
+            width: 200px;
           `;
-          popup.appendChild(receiptBtn);
+
+          buttonContainer.appendChild(contractBtn);
+          buttonContainer.appendChild(receiptBtn);
+          popup.appendChild(buttonContainer);
 
         }, 1000);
       }, 1000);
