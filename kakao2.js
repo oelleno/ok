@@ -26,7 +26,7 @@ document.getElementById('sendKakao').addEventListener('click', async () => {
     const userData = docSnap.data();
     const 회사명 = '바디스타';
     const 고객명 = userData.name;
-    const 계약서사본 = 'oelleno.github.io/ok/';
+    const 계약서사본 = userData.imageUrl;
 
     const response = await fetch('https://kakaoapi.aligo.in/akv10/alimtalk/send/', {
       method: 'POST',
