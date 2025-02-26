@@ -139,7 +139,7 @@
 
     .preview-container {
       display: none;
-      width: 400px;
+      width: 447px;  
       height: 600px;
       position: relative;
       border: 1px solid #ccc;
@@ -161,7 +161,8 @@
     <div class="d-flex align-items-center justify-content-center mb-4 gap-3">
       <h2 class="m-0">영수증 관리</h2>
       <button class="add-receipt-btn btn btn-primary btn-contract" id="add-receipt-btn">+</button>
-      <button type="button" id="excel-upload-btn" class="btn btn-primary btn-contract" style="margin-left: 20px; min-width: 150px; min-height: 50px;">최종업로드</button>
+      <button type="button" id="excel-upload-btn" class="btn btn-primary btn-contract"
+        style="margin-left: 20px; min-width: 150px; min-height: 50px;">최종업로드</button>
     </div>
 
     <div class="receipts-grid" id="receipts-grid">
@@ -197,9 +198,9 @@
   <script type="module">
     let currentReceiptBox = null;
     let stream = null;
-    import { storage, db } from "./firebase.js";
-    import { doc, updateDoc, arrayUnion, getDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
-    import { ref, uploadString, getDownloadURL, uploadBytesResumable } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js";
+    import {storage, db} from "./firebase.js";
+    import {doc, updateDoc, arrayUnion, getDoc} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+    import {ref, uploadString, getDownloadURL, uploadBytesResumable} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js";
 
     // Get docId from localStorage when page loads
     function initializeDocId() {
@@ -219,7 +220,7 @@
 
     // 초기 카메라 버튼 이벤트 설정
     document.querySelectorAll('.capture-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function () {
         currentReceiptBox = this.closest('.receipt-box');
         openCamera();
       });
@@ -234,14 +235,14 @@
         const constraints = {
           video: {
             facingMode: {exact: 'environment'},
-            width: { ideal: 1920 },
-            height: { ideal: 1080 }
+            width: {ideal: 1920},
+            height: {ideal: 1080}
           },
           audio: false
         };
         try {
           stream = await navigator.mediaDevices.getUserMedia(constraints);
-        } catch(err) {
+        } catch (err) {
           // Fallback to any available camera if rear camera fails
           stream = await navigator.mediaDevices.getUserMedia({
             video: true,
@@ -309,7 +310,7 @@
       time.style.padding = '9px 10px';
       time.style.borderRadius = '4px';
 
-time.style.display = 'flex';
+      time.style.display = 'flex';
       time.style.alignItems = 'center';
 
       currentReceiptBox.innerHTML = '';
@@ -319,7 +320,7 @@ time.style.display = 'flex';
       const captureBtn = document.createElement('button');
       captureBtn.className = 'capture-btn';
       captureBtn.innerHTML = '<i class="bi bi-camera"></i>';
-      captureBtn.addEventListener('click', function() {
+      captureBtn.addEventListener('click', function () {
         currentReceiptBox = this.closest('.receipt-box');
         openCamera();
       });
@@ -357,7 +358,7 @@ time.style.display = 'flex';
         </div>
     `;
 
-      container.querySelector('.capture-btn').addEventListener('click', function() {
+      container.querySelector('.capture-btn').addEventListener('click', function () {
         currentReceiptBox = this.closest('.receipt-box');
         openCamera();
       });
@@ -377,7 +378,7 @@ time.style.display = 'flex';
     }
 
     // 노트 저장 버튼 이벤트
-    document.addEventListener('click', async function(event) {
+    document.addEventListener('click', async function (event) {
       if (!event.target.classList.contains('save-note-btn')) return;
 
       const btn = event.target;
@@ -458,8 +459,9 @@ time.style.display = 'flex';
     });
   </script>
   <script type="module">
-    import { excelupload } from './excel.js';
+    import {excelupload} from './excel.js';
     document.getElementById('excel-upload-btn').addEventListener('click', excelupload);
   </script>
 </body>
+
 </html>

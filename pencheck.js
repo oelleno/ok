@@ -7,8 +7,9 @@ document.addEventListener("DOMContentLoaded", function () {
     canvas.style.left = "0";
     canvas.style.width = "100%";
     canvas.style.height = "100%";
-    canvas.style.pointerEvents = "none"; // 입력 필드 클릭 가능
+    canvas.style.pointerEvents = "none";
     canvas.style.zIndex = "99";
+    canvas.style.touchAction = "none"; // Added for iPad
 
     const ctx = canvas.getContext("2d");
 
@@ -29,9 +30,22 @@ document.addEventListener("DOMContentLoaded", function () {
     class Line {
         constructor() {
             this.points = [];
-            this.opacity = 0.7;  // 형광펜 불투명도
+            this.opacity = 0.7;
             this.startTime = Date.now();
         }
+    }
+
+    function getPoint(e) {
+        if (e.type.includes('touch')) {
+            return {
+                x: e.touches[0].clientX,
+                y: e.touches[0].clientY
+            };
+        }
+        return {
+            x: e.clientX,
+            y: e.clientY
+        };
     }
 
     function isOverRestrictedField(x, y) {
@@ -39,14 +53,42 @@ document.addEventListener("DOMContentLoaded", function () {
         return elements.some(el => ["input", "select"].includes(el.tagName.toLowerCase()));
     }
 
+    function startDrawing(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        const point = getPoint(e);
+        initialY = point.y;
+
+        if (isOverRestrictedField(point.x, point.y)) {
+            isDragging = false;
+            return;
+        }
+
+        isDrawing = true;
+        isDragging = true;
+        lastPoint = point;
+        lines.push(new Line());
+        
+        if (e.type.includes('touch')) {
+            const touch = e.touches[0];
+            lastPoint = {
+                x: touch.clientX,
+                y: touch.clientY
+            };
+        }
+        draw(e);
+    }
+
     function draw(e) {
         if (!isDrawing) return;
         e.preventDefault();
 
-        const point = {
-            x: e.type.includes("touch") ? e.touches[0].clientX : e.clientX,
-            y: e.type.includes("touch") ? e.touches[0].clientY : e.clientY,
-        };
+        const point = getPoint(e);
+
+        if (lastPoint && Math.abs(point.y - initialY) > 10) {
+            stopDrawing();
+            return;
+        }
 
         if (lines.length > 0 && lastPoint) {
             const lastLine = lines[lines.length - 1];
@@ -87,61 +129,6 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function startDrawing(e) {
-        if (!e.buttons) return;
-
-        const point = {
-            x: e.type.includes("touch") ? e.touches[0].clientX : e.clientX,
-            y: e.type.includes("touch") ? e.touches[0].clientY : e.clientY,
-        };
-        initialY = point.y;
-
-        // `input`과 `select` 위에서는 형광펜 작동 금지, `textarea`에서는 정상 작동
-        if (isOverRestrictedField(point.x, point.y)) {
-            isDragging = false;
-            return;
-        }
-
-        isDrawing = true;
-        isDragging = true;
-        lastPoint = point;
-        lines.push(new Line());
-        draw(e);
-    }
-
-    function draw(e) {
-        if (!isDrawing) return;
-        e.preventDefault();
-
-        const point = {
-            x: e.type.includes("touch") ? e.touches[0].clientX : e.clientX,
-            y: e.type.includes("touch") ? e.touches[0].clientY : e.clientY,
-        };
-
-        // Check if movement is more vertical than horizontal
-        if (lastPoint && Math.abs(point.y - initialY) > 10) {
-            stopDrawing();
-            return;
-        }
-
-        if (lines.length > 0 && lastPoint) {
-            const lastLine = lines[lines.length - 1];
-            const distance = Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y);
-
-            if (distance > 5) {
-                const midpoint = {
-                    x: (point.x + lastPoint.x) / 2,
-                    y: (point.y + lastPoint.y) / 2,
-                };
-                lastLine.points.push(midpoint);
-            }
-        }
-
-        lastPoint = point;
-        lines[lines.length - 1].points.push(point);
-        drawLines();
-    }
-
     function stopDrawing() {
         if (!isDragging) return;
         isDrawing = false;
@@ -151,25 +138,37 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function animate() {
         const currentTime = Date.now();
-
         lines = lines.filter(line => {
             const elapsed = currentTime - line.startTime;
-            line.opacity = Math.max(0, 0.7 - elapsed / fadeOutDuration);  // 불투명도
+            line.opacity = Math.max(0, 0.7 - elapsed / fadeOutDuration);
             return line.opacity > 0;
         });
-
         drawLines();
         requestAnimationFrame(animate);
     }
 
-    document.addEventListener("mousedown", startDrawing);
-    document.addEventListener("mousemove", draw);
-    document.addEventListener("mouseup", stopDrawing);
-    document.addEventListener("mouseout", stopDrawing);
+    // Touch Events
+    // Touch Events with improved handling
+    canvas.addEventListener("touchstart", startDrawing, { passive: false });
+    canvas.addEventListener("touchmove", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        draw(e);
+    }, { passive: false });
+    canvas.addEventListener("touchend", (e) => {
+        e.preventDefault();
+        stopDrawing();
+    });
+    canvas.addEventListener("touchcancel", (e) => {
+        e.preventDefault();
+        stopDrawing();
+    });
 
-    document.addEventListener("touchstart", startDrawing);
-    document.addEventListener("touchmove", draw);
-    document.addEventListener("touchend", stopDrawing);
+    // Mouse Events
+    canvas.addEventListener("mousedown", startDrawing);
+    canvas.addEventListener("mousemove", draw);
+    canvas.addEventListener("mouseup", stopDrawing);
+    canvas.addEventListener("mouseout", stopDrawing);
 
     animate();
 });

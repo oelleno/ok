@@ -23,13 +23,13 @@ body {
 }
 
 .container {
-  width: 1000px
+  width: 1000px;
   max-width: 100%;   /* 화면 크기에 맞게 조정 */
   min-width: unset; /* 최소 너비 제한 해제 */
   background-color: white;
   border-radius: 20px;
   margin: 5px auto;
-  padding: 5px 5px 5px 5px;
+  padding: 5px 15px 10px 10px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   min-height: calc(80vh);
   display: flex;
@@ -103,7 +103,7 @@ body, .container {
   }
 
   .terms {
-    font-size: 1.3vw;
+    font-size: 10px;
     font-weight: lighter;
     margin-bottom: 0px;
     line-height: 1.2;
@@ -111,7 +111,7 @@ body, .container {
 
   .terms strong {
     font-weight: 700;
-    font-size: 12px;
+    font-size: 11px;
     color: #273444;
     margin-left: -12px;
   }
@@ -175,7 +175,7 @@ body, .container {
     row-gap: 10px; /* 위아래 간격 */
     column-gap: 2px; /* 좌우 간격 */
     align-items: center;
-    width: 97%;
+    width: 46vw;
   }
 
 
@@ -270,13 +270,11 @@ body, .container {
     appearance: none;
     margin-bottom: 1px;
     line-height: 1.5;
-    /* 줄 간격 조정 */
     letter-spacing: 1.5px;
-    /* 글자 간격 추가 */
   }
 
   .time-input {
-    width: 65px;
+    width: 60px;
     height: 25px;
     border: 1px solid #ccc;
     border-radius: 5px;

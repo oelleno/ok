@@ -37,6 +37,7 @@
   <script src="./dictation.js"></script>
   <script type="module" src="./excel.js"></script>
   <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./mobile.css">
   <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
   <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/ckeditor.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -108,8 +109,8 @@
 <body>
   <div class="container">
     <div class="header-container">
-      <div style="display: flex; align-items: center;">
-        <img src="./BDST.png" alt="Logo" style="height: 50px; margin-right: 0px;">
+      <div style="display: flex; align-items: center;" class="headerLogoSection">
+        <img src="./BDST.png" alt="Logo" style="height: 50px; margin-right: 0px;" class="brandLogo">
         <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px; margin-top: 20px;">
           <i class="fa-brands fa-gg-circle icon" style="color: #000000;"></i>
           <select name="branch" id="branch" class="thisbox" style="width: 100px; height: 30px; margin-left: -5px;">
@@ -275,7 +276,7 @@
         <div style="flex: 1;">
           <p><i class="fa-solid fa-record-vinyl icon"></i>운동목적</p>
           <div class="goal-group"
-            style="border: 1px solid #ccc; padding: 10px 7px; border-radius: 10px; margin: 0 0px 0px 15px;">
+            style="border: 1px solid #ccc; padding: 10px 2px 10px 7px; border-radius: 10px; margin: 0 0px 0px 15px;">
             <label><input type="checkbox" name="goal" value="다이어트"> 다이어트</label>
             <label><input type="checkbox" name="goal" value="근육증가"> 근육증가</label>
             <label><input type="checkbox" name="goal" value="체형교정"> 체형교정</label>
@@ -283,13 +284,13 @@
             <div style="margin-top: 0px; display: flex; align-items: center; gap: 0px;">
               <label style="min-width: 50px; font-size: 14px;"><input type="checkbox" name="goal" value="기타"> 기타</label>
               <input type="text" name="other" id="other" class="thisbox"
-                style="margin-bottom: 0; width: 33vw; height: 25px;  margin-left: 0px;font-size: 12px;" placeholder="기타 입력" lang="ko"
+                style="margin-bottom: 0; width: 35vw; height: 25px;  margin-left: 0px;font-size: 12px;" placeholder="기타 입력" lang="ko"
                 inputmode="text">
             </div>
           </div>
           <p style="margin-top: 15px;"><i class="fa-solid fa-clock icon"></i>운동시간</p>
           <div style="border: 1px solid #ccc; padding: 10px 7px; border-radius: 10px; margin: 0 0px 10px 15px;">
-            <div style="display: flex; align-items: center; gap: 5px;">
+            <div style="display: flex; align-items: center; gap: 5px;" class="workoutTime">
               <div style="display: flex; align-items: center; white-space: nowrap; font-size: 14px;">
                 <select name="morning_hour" class="time-input" style="margin-right: 5px;">
                   <option value="">시간</option>
@@ -348,7 +349,7 @@
                   <option value="23">23시</option>
                   <option value="24">24시</option>
                 </select>
-                <input type="text" class="time-input" style="width: 22vw;font-size: 12px;" placeholder="추가 입력" lang="ko"
+                <input type="text" class="time-input" style="width: 19vw;font-size: 12px;" placeholder="추가 입력" lang="ko"
                   inputmode="text">
               </label>
             </div>
@@ -438,7 +439,7 @@
       <div class="section" style="margin-top: -10px;">
         <p><i class="fa-solid fa-compass icon"></i>가입경로</p>
         <div style="padding: 5px 7px; margin: 0 0px 10px 15px; border: 1px solid #ccc; border-radius: 10px;">
-          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;">
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: nowrap;" class="referral">
             <label style="font-size: 14px; white-space: nowrap;"><input type="checkbox" name="referral" value="간판">
               간판</label>
             <label style="font-size: 14px; white-space: nowrap;"><input type="checkbox" name="referral" value="전단지">
@@ -447,7 +448,7 @@
               <label style="font-size: 14px; white-space: nowrap; margin-right: -10px;"><input type="checkbox"
                   name="referral" value="SNS">
                 SNS</label>
-              <input type="text" name="sns_detail" id="snsField" class="thisbox" style="width: 100px; height: 30px;font-size: 12px; "
+              <input type="text" name="sns_detail" id="snsField" class="thisbox" style="width: 100%; height: 30px;font-size: 12px; "
                 placeholder="SNS 채널명" lang="ko" inputmode="text">
             </div>
             <div style="display: flex; align-items: center; gap: 0px;">
@@ -455,7 +456,7 @@
                   name="referral" value="인터넷검색">
                 인터넷검색</label>
               <input type="text" name="internet_detail" class="thisbox"
-                style="font-size: 12px; width: 100%; height: 30px; padding-left:2px" placeholder="사이트/검색어" lang="ko" inputmode="text">
+                style="font-size: 12px; width: 100%; height: 30px; padding-left:5px" placeholder="사이트/검색어" lang="ko" inputmode="text">
             </div>
             <div style="display: flex; align-items: center; gap: 0px;">
               <label style="font-size: 14px; white-space: nowrap; margin-right: -10px;"><input type="checkbox"
@@ -469,7 +470,7 @@
       </div>
 
       <!-- 약관 내용 추가 -->
-      <div class="section terms-section" style="margin-left: 10px;">
+      <div class="section terms-section" style="margin-left: 20px;">
         <p class="terms"><strong>1.회원권 휴회</strong> <br>
           6개월 1회, 12개월 2회 가능하고, 연기 신청서를 작성시 인정됩니다. 회당 최대 30일까지 휴회가 가능하고, 락카기간은 정지가 불가합니다.<br>군복무, 임신 등 센터가 인정하는 사유로 장기간
           이용할 수 없는 경우에는 센터에서 정한 양식을 작성하고 관계 증빙서류를 첨부 제출하여 휴회할 수 있습니다.<br>
@@ -487,7 +488,7 @@
           있습니다.<br>
           <strong>6.면책 규정</strong> <br>
           센터는 어떤 경우에도 시설 내에서 분실 또는 도난 당한 물품에 대해서 책임지지 않으며, 회원님 개인 물품의 보관은 전적으로 개인 책임입니다.<br>본 센터가 시설 관리 또는 회원 질서유지 등과
-          관련하여 책임 있는 경우를 제외하고, 시설을 이용하는 회원님 자신 또는 제 3자의 행위로 인한 신체적, 정신적 장애나<br>경제적 혹은 기타 손실에 대해 본 센터가 어떠한 책임도 지지 않는 것에
+          관련하여 책임 있는 경우를 제외하고, 시설을 이용하는 회원님 자신 또는 제 3자의 행위로 인한<br>신체적, 정신적 장애나 경제적 혹은 기타 손실에 대해 본 센터가 어떠한 책임도 지지 않는 것에
           동의합니다.<br>
           <strong>7.회원권 해지</strong> <br>
           해지는 전화 신청이 불가하며, 센터 절차에 따라 직접 방문 작성, 신청하셔야 합니다.<br>
@@ -506,10 +507,10 @@
       </div>
 
       <div class="section terms-section"
-        style="border-bottom: 2.5px solid #003366; display: flex; gap: 5px; margin-top: -15px;">
+        style="border-bottom: 2.5px solid #003366; display: flex; gap: 5px; margin-top: -15px; margin-left: 10px;">
         <div style="flex: 1;">
           <p class="terms" style="margin-bottom: 2px; text-align: center;"><strong>24시 이용안내</strong></p>
-          <hr style="border-top: 1px solid #003366; width: 120%; margin: 5px 0;">
+          <hr style="border-top: 1px solid #003366; width: 102%; margin: 5px 0;">
           <p class="terms">1. 야간 서비스는 만 19세 이상부터 이용 가능합니다.<br>
             2. 음주시 센터 이용과 센터 내 음주는 불가합니다.<br>
             3. 클럽 회원은 회원 등록이 안된 게스트와 함께 입장할 수 없습니다.<br>
@@ -519,9 +520,11 @@
             7. 휴일 및 공휴일에는 운동복 및 수건이 지급되지 않을 수 있습니다.<br>
             8. 형법 제319조에 의거 무단출입 또는 타인의 무단출입을 도와줄 경우,<br>&nbsp;&nbsp;&nbsp;&nbsp;최대 500만원의 벌금에 처할 수 있습니다.<br>
             <hr style="border: 0; border-top: 1px solid #003366;; margin: 5px 0;">
-            <strong style="font-size: 13px;"><i class="fa-solid fa-circle-exclamation icon"></i>모든
-              사용자는 항상 클럽 내 규칙 및 표준에 따라야 합니다.<br>
-              <span style="margin-left: 24px;">위 규칙 위반 시 회원권 권한이 상실될 수 있습니다.</span></strong>
+            <strong style="font-size: 1.7vw; line-height: 2; display: block;">
+              <i class="fa-solid fa-circle-exclamation icon"></i>모든 사용자는 항상 클럽 내 규칙 및 표준에 따라야 합니다.
+            </strong><strong style="font-size: 1.7vw; margin-left: 24px; display: block;margin-top: -8px;">
+              위 규칙 위반 시 회원권 권한이 상실될 수 있습니다.
+            </span></strong>
           </p>
           <div style="text-align: right; margin-top: -10px;">
             <label style="font-size: 14px;">
@@ -538,7 +541,7 @@
             <span
               style="position: absolute; top: -10px; left: 10px; background: white; padding: 0 5px; font-size: 12px; font-weight: bold;">서비스
               정상가격</span>
-            <p class="terms" style="margin: 0;font-size: 12px; font-weight: bold;">회원권 1일 5,000원 | 무료PT 50,000원 | GX 30,000원</p>
+            <p class="terms" style="margin: 0;font-size: 1.6vw; font-weight: bold;">회원권 1일 5,000원 | 무료PT 50,000원 | GX 30,000원</p>
           </div>
           <p class="terms">1. 이용 개시일 전에는 위약금 10%가 공제됩니다.<br>
             2. 이용 개시일 후에는 위약금 10% + 소요기간 * 정상가격이 공제됩니다.<br>
@@ -547,7 +550,7 @@
             5. 해지시 개인적인 사정에 의해 연기된 기간은 이용 기간에 포함됩니다.<br>
             6. 무료PT의 경우 일방적인 수업 취소시에도 금액이 공제됩니다.<br>
             7. 환불은 신청 후 영업일 기준 15일 이내에 처리 됩니다.</p>
-          <div style="text-align: right; margin-top: 10px;">
+          <div style="text-align: right; margin-top: 0px;">
             <label style="font-size: 14px;">
               <input type="checkbox" name="refund_terms_agree" lang="ko" inputmode="checkbox"> <strong>위 환불규정에
                 동의합니다</strong>
@@ -557,7 +560,7 @@
       </div>
 
       <div class="section signbox">
-        <p style="font-weight: bold; font-size: 1.5vw; margin-top: 4px;">본인은 위 계약내용을 <span class="dictation-text"
+        <p style="font-weight: bold; font-size: 1.6vw; margin-top: 4px;">본인은 위 계약내용을 <span class="dictation-text"
             data-text="모두 이해">모두 이해</span>하였고, 이에 <span class="dictation-text" data-text="동의">동의</span>하였습니다. 또한 본인 자필로
           서명한 회원가입계약서 사본을 교부 받았음을 <span class="dictation-text" data-text="인정">인정</span>합니다.
 
@@ -570,7 +573,7 @@
         </div>
         <div>
           <p style="margin: -30px 140px 5px 0px; font-size: 12px; text-align: right;">신청인
-          <p style="margin: -28px 10px 0px 0px; text-align: right;"><span class="dictation-text" data-text="(서명)"
+          <p style="margin: -25px 10px 0px 0px; text-align: right;"><span class="dictation-text" data-text="(서명)"
               style="padding: 30px 90px; display: inline-block; position: relative;"><span
                 style="position: absolute; bottom: 30px; right: 5px;">(서명)</span></span></p>
         </div>
@@ -585,7 +588,7 @@
       display: inline-block;
       color: #999999;
       border: 1px solid #cccccc;
-      padding: 2px 4px;
+      padding: 0px 4px;
       border-radius: 3px;
     }
 
