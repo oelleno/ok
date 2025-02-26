@@ -90,7 +90,7 @@ function downloadAsImage() {
       z-index: 1000;
       text-align: center;
       min-width: 300px;
-      min-height: 250px;
+      min-height: 180px;
       font-size: 16px;
       display: flex;
       flex-direction: column;
