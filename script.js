@@ -140,6 +140,12 @@ function downloadAsImage() {
               return;
             }
             sendKakaoBtn.click();
+            
+            // Add event listener for successful Kakao send
+            window.addEventListener('kakaoSendSuccess', () => {
+              contractBtn.textContent = '계약서 전송완료!';
+              contractBtn.disabled = true;
+            }, { once: true });
           };
           contractBtn.style.cssText = `
             padding: 10px 20px;

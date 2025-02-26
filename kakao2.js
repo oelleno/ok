@@ -64,6 +64,9 @@ document.getElementById('sendKakao').addEventListener('click', async () => {
 
     const result = await response.json();
     console.log('카카오 알림톡 전송 결과:', result);
+    if (result.code === 0 && result.message === '성공적으로 전송요청 하였습니다.') {
+      window.dispatchEvent(new Event('kakaoSendSuccess'));
+    }
     alert('알림톡이 전송되었습니다.');
   } catch (error) {
     console.error('카카오 알림톡 전송 실패:', error);
