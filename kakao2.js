@@ -39,7 +39,7 @@ document.getElementById('sendKakao').addEventListener('click', async () => {
         'senderkey': 'b4c886fa9bd3cbf1faddb759fa6532867844ef03',
         'tpl_code': 'TY_1680',
         'sender': '01092792273',
-        'receiver_1': '01086871992',
+        'receiver_1': userData.contact,
         'subject_1': '계약서',
         'message_1': `[${회사명}]\n안녕하세요. ${고객명}님!\n${회사명}에 등록해주셔서 진심으로 감사드립니다!`,
         'button_1': `{
