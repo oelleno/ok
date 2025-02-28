@@ -160,6 +160,8 @@
       <button class="add-receipt-btn btn btn-primary btn-contract" id="add-receipt-btn">+</button>
       <button type="button" id="excel-upload-btn" class="btn btn-primary btn-contract"
         style="margin-left: 20px; min-width: 180px; min-height: 38px;">✅ 최종업로드</button>
+      <button type="button" id="send-manager-btn" class="btn btn-danger btn-contract"
+        style="margin-left: 10px; min-width: 180px; min-height: 38px;">📱 매니저알림전송</button>
     </div>
 
     <div class="receipts-grid" id="receipts-grid">
@@ -467,7 +469,18 @@
   </script>
   <script type="module">
     import {excelupload} from './excel.js';
+    import {sendKakaoManager} from './kakao.js';
+    
     document.getElementById('excel-upload-btn').addEventListener('click', excelupload);
+    
+    document.getElementById('send-manager-btn').addEventListener('click', async () => {
+      try {
+        await sendKakaoManager();
+      } catch (error) {
+        console.error('매니저 알림 전송 실패:', error);
+        alert('매니저 알림 전송에 실패했습니다.');
+      }
+    });
   </script>
 </body>
 

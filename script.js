@@ -5,6 +5,8 @@ async function handleSubmit() {
 
     // Then generate and download image
     downloadAsImage();
+    // ✅ Firestore에 `imageUrl`이 저장된 후 버튼 활성화
+    document.getElementById('sendKakao').style.display = 'block';
   } catch (error) {
     console.error("Error submitting form:", error);
     alert(error.message || "양식 제출 중 오류가 발생했습니다.");
@@ -997,15 +999,20 @@ function calculateTotal() {
   const discount = parseInt(document.getElementById('discount').value.replace(/[^\d]/g, '') || 0);
 
   const total = admissionFee + rentalPrice + lockerPrice + membershipFee - discount;
-  const combinedPaymentRadio = document.querySelector('input[type="radio"][value="복합결제"]');
   const totalAmount = document.getElementById('total_amount');
   const unpaidField = document.getElementById('unpaid');
 
   totalAmount.value = '₩ ' + total.toLocaleString('ko-KR');
 
+  // ✅ combinedPaymentRadio를 함수 맨 위에서 선언하여 전체 함수에서 사용 가능하도록 변경
+  const combinedPaymentRadio = document.querySelector('input[type="radio"][value="복합결제"]');
+
+  let unpaidAmount = 0;
+  let combinedPaymentTotal = 0;
+
   if (combinedPaymentRadio && combinedPaymentRadio.checked) {
-    const combinedPaymentTotal = getCombinedPaymentTotal();
-    const unpaidAmount = total - combinedPaymentTotal;
+    combinedPaymentTotal = getCombinedPaymentTotal();
+    unpaidAmount = total - combinedPaymentTotal;
     unpaidField.value = '결제예정 ₩' + (unpaidAmount > 0 ? unpaidAmount.toLocaleString('ko-KR') : '0');
     unpaidField.style.backgroundColor = unpaidAmount > 0 ? '#ffebeb' : '#f5f5f5';
   } else {
@@ -1013,8 +1020,12 @@ function calculateTotal() {
     unpaidField.style.backgroundColor = '#f5f5f5';
   }
 
+  // 🎯 콘솔 로그 추가 (복합결제 시 결제예정 금액 계산 포함)
   console.log(`🎯 Total Calculation: ${admissionFee} + ${rentalPrice} + ${lockerPrice} + ${membershipFee} - ${discount} = ${total}`);
+  console.log(`💳 Combined Payment: ${combinedPaymentRadio && combinedPaymentRadio.checked ? combinedPaymentTotal.toLocaleString('ko-KR') : 'N/A'}`);
+  console.log(`📝 Unpaid Amount: ${unpaidAmount.toLocaleString('ko-KR')} 원`);
 }
+
 
 document.addEventListener('DOMContentLoaded', function() {
   const membershipSelect = document.getElementById('membership');

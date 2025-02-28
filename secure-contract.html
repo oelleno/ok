@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계약서 확인</title>
+    <script type="module">
+        import {db} from "./firebase.js";
+        import {doc, getDoc} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+
+        async function verifyPhoneNumber() {
+            const contractId = new URLSearchParams(window.location.search).get("id");
+            const inputPhone = document.getElementById("phoneDigits").value.trim();
+            const errorMessage = document.getElementById("error-message");
+
+            if (!contractId || !inputPhone) {
+                errorMessage.textContent = "계약서를 찾을 수 없습니다.";
+                return;
+            }
+
+            try {
+                const contractRef = doc(db, "회원가입계약서", contractId);
+                const contractSnap = await getDoc(contractRef);
+
+                if (!contractSnap.exists()) {
+                    errorMessage.textContent = "계약서를 찾을 수 없습니다.";
+                    return;
+                }
+
+                const userData = contractSnap.data();
+                const lastFourDigits = userData.contact.slice(-4);
+
+                if (inputPhone === lastFourDigits) {
+                    window.location.href = userData.imageUrl; // 계약서 URL로 이동
+                } else {
+                    errorMessage.textContent = "전화번호 뒤 4자리가 올바르지 않습니다.";
+                }
+            } catch (error) {
+                console.error("인증 오류:", error);
+                errorMessage.textContent = "서버 오류가 발생했습니다.";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("verifyButton").addEventListener("click", verifyPhoneNumber);
+        });
+    </script>
+</head>
+
+<body>
+    <div style="text-align: center; margin-top: 50px;">
+        <h2>계약서 확인</h2>
+        <p>계약서를 확인하려면, 가입 시 등록한 전화번호 뒤 4자리를 입력하세요.</p>
+        <input type="text" id="phoneDigits" maxlength="4" placeholder="전화번호 뒤 4자리 입력"
+            style="padding: 10px; font-size: 16px;">
+        <button id="verifyButton" style="padding: 10px; font-size: 16px;">확인</button>
+        <p id="error-message" style="color: red;"></p>
+    </div>
+</body>
+
+</html>

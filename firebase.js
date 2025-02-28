@@ -66,7 +66,7 @@ async function submitForm() {
 
             // 생성된 docId를 전역 변수에 저장
             window.docId = `${dateStr}_${dailyNumber}_${name}`;
-            console.log("생성된 Doc ID:", window.docId);
+            console.log("🚀 생성된 Doc ID:", window.docId);
 
             // 저장할 데이터
             const userData = {
