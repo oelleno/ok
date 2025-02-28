@@ -131,24 +131,43 @@ function downloadAsImage() {
           // Create contract copy button (sendKakao)
           const contractBtn = document.createElement('button');
           contractBtn.textContent = '계약서 사본발송';
-          contractBtn.onclick = function() {
+          
+          // Use both click and touch events for better cross-device compatibility
+          function handleContractSend(e) {
+            if (e) e.preventDefault(); // Prevent default behavior
+            
             if (!window.docId) {
               alert('계약서 번호를 찾을 수 없습니다.');
               return;
             }
-            const sendKakaoBtn = document.getElementById('sendKakao');
-            if (!sendKakaoBtn) {
-              alert('카카오 발송 버튼을 찾을 수 없습니다.');
-              return;
-            }
-            sendKakaoBtn.click();
             
-            // Add event listener for successful Kakao send
-            window.addEventListener('kakaoSendSuccess', () => {
-              contractBtn.textContent = '계약서 전송완료!';
-              contractBtn.disabled = true;
-            }, { once: true });
-          };
+            // Instead of triggering click on another button, call the function directly
+            try {
+              if (typeof sendKakaoContract === 'function') {
+                sendKakaoContract();
+              } else {
+                // Fallback to click if the function isn't available
+                const sendKakaoBtn = document.getElementById('sendKakao');
+                if (!sendKakaoBtn) {
+                  alert('카카오 발송 기능을 찾을 수 없습니다.');
+                  return;
+                }
+                sendKakaoBtn.click();
+              }
+              
+              // Add event listener for successful Kakao send
+              window.addEventListener('kakaoSendSuccess', () => {
+                contractBtn.textContent = '계약서 전송완료!';
+                contractBtn.disabled = true;
+              }, { once: true });
+            } catch (error) {
+              console.error('카카오 발송 오류:', error);
+              alert('카카오 발송 중 오류가 발생했습니다.');
+            }
+          }
+          
+          contractBtn.onclick = handleContractSend;
+          contractBtn.addEventListener('touchend', handleContractSend);
           contractBtn.style.cssText = `
             padding: 10px 20px;
             background: #FEE500;

@@ -474,11 +474,19 @@
     document.getElementById('excel-upload-btn').addEventListener('click', excelupload);
     
     document.getElementById('send-manager-btn').addEventListener('click', async () => {
+      const button = document.getElementById('send-manager-btn');
+      button.disabled = true;
+      button.textContent = '전송 중...';
+      
       try {
         await sendKakaoManager();
+        button.textContent = '📱 매니저알림완료!';
+        button.classList.replace('btn-danger', 'btn-secondary');
       } catch (error) {
         console.error('매니저 알림 전송 실패:', error);
         alert('매니저 알림 전송에 실패했습니다.');
+        button.disabled = false;
+        button.textContent = '📱 매니저알림전송';
       }
     });
   </script>

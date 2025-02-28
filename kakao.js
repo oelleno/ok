@@ -180,7 +180,12 @@ try {
 document.addEventListener('DOMContentLoaded', function() {
   const sendKakaoButton = document.getElementById('sendKakao');
   if (sendKakaoButton) {
+    // Add both click and touchend events for better cross-device compatibility
     sendKakaoButton.addEventListener('click', sendKakaoContract);
+    sendKakaoButton.addEventListener('touchend', function(e) {
+      e.preventDefault(); // Prevent default touch behavior
+      sendKakaoContract();
+    });
   }
 });
 
