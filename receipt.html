@@ -15,6 +15,13 @@
   <style>
     .container {
       padding: 2rem;
+      width: 100%;
+      touch-action: manipulation pinch-zoom;
+    }
+    
+    body {
+      touch-action: pan-x pan-y pinch-zoom;
+      -webkit-overflow-scrolling: touch;
     }
 
     .receipts-grid {
