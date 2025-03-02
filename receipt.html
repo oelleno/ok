@@ -14,11 +14,10 @@
 
   <style>
     .container {
-      padding: 2rem;
+      padding: 2rem 0rem;
       width: 100%;
-      touch-action: manipulation pinch-zoom;
     }
-    
+
     body {
       touch-action: pan-x pan-y pinch-zoom;
       -webkit-overflow-scrolling: touch;
@@ -156,7 +155,32 @@
       padding: 19px;
     }
 
+    @media (min-width: 481px) and (max-width: 1800px) {
+      .container {
+        width: 100%;
+        touch-action: manipulation pinch-zoom;
+      }
 
+      body {
+        touch-action: pan-x pan-y pinch-zoom;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .d-flex.align-items-center.justify-content-center.mb-4 {
+        white-space: nowrap;
+        overflow-x: auto;
+        padding-bottom: 10px;
+      }
+
+      .d-flex.align-items-center.justify-content-center.mb-4 h2 {
+        font-size: 1.5rem;
+        min-width: fit-content;
+      }
+
+      .d-flex.align-items-center.justify-content-center.mb-4 button {
+        min-width: fit-content !important;
+      }
+    }
   </style>
 </head>
 
@@ -289,24 +313,24 @@
       document.querySelector('.preview-container').style.display = 'block';
     });
 
-      // 저장 버튼 클릭 시 이미지 저장
-      document.getElementById('save-btn').addEventListener('click', () => {
-          const previewCanvas = document.getElementById('preview-canvas'); // 📌 프리뷰 캔버스
+    // 저장 버튼 클릭 시 이미지 저장
+    document.getElementById('save-btn').addEventListener('click', () => {
+      const previewCanvas = document.getElementById('preview-canvas'); // 📌 프리뷰 캔버스
 
-          // 📌 프리뷰 캔버스 크기를 기준으로 이미지 저장
-          const finalCanvas = document.createElement('canvas');
-          finalCanvas.width = previewCanvas.width;
-          finalCanvas.height = previewCanvas.height;
-          const finalContext = finalCanvas.getContext('2d');
+      // 📌 프리뷰 캔버스 크기를 기준으로 이미지 저장
+      const finalCanvas = document.createElement('canvas');
+      finalCanvas.width = previewCanvas.width;
+      finalCanvas.height = previewCanvas.height;
+      const finalContext = finalCanvas.getContext('2d');
 
-          finalContext.drawImage(previewCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
+      finalContext.drawImage(previewCanvas, 0, 0, finalCanvas.width, finalCanvas.height);
 
-          // 이미지 요소 생성 및 표시
-          const img = document.createElement('img');
-          img.src = finalCanvas.toDataURL('image/jpeg'); // 🎯 **프리뷰와 동일한 크기**
-        img.style.borderRadius = '8px';
+      // 이미지 요소 생성 및 표시
+      const img = document.createElement('img');
+      img.src = finalCanvas.toDataURL('image/jpeg'); // 🎯 **프리뷰와 동일한 크기**
+      img.style.borderRadius = '8px';
 
-        const timestamp = new Date().toLocaleString('ko-KR', {
+      const timestamp = new Date().toLocaleString('ko-KR', {
         year: 'numeric',
         month: '2-digit',
         day: '2-digit',
@@ -477,14 +501,14 @@
   <script type="module">
     import {excelupload} from './excel.js';
     import {sendKakaoManager} from './kakao.js';
-    
+
     document.getElementById('excel-upload-btn').addEventListener('click', excelupload);
-    
+
     document.getElementById('send-manager-btn').addEventListener('click', async () => {
       const button = document.getElementById('send-manager-btn');
       button.disabled = true;
       button.textContent = '전송 중...';
-      
+
       try {
         await sendKakaoManager();
         button.textContent = '📱 매니저알림완료!';
