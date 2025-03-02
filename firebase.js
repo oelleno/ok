@@ -125,7 +125,6 @@ async function submitForm() {
 
             // Firestore에 저장
             await setDoc(doc(db, "회원가입계약서", docId), userData);
-            alert("회원 정보가 성공적으로 저장되었습니다!");
             resolve();
         } catch (error) {
             console.error("회원 정보 저장 중 오류 발생:", error);
