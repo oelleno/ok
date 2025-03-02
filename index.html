@@ -73,7 +73,7 @@
                             <div class="d-flex align-items-center">
                                 <input type="text" class="form-control" id="verification-code" placeholder="6자리 코드 입력"
                                     inputmode="tel" lang="ko">
-                                <span id="timer" class="ms-2 badge" style="height: 30px; display: flex; align-items: center; font-size: 14px; background-color: #6610f2 !important; color: white;">3:00</span>
+                                <span id="timer" class="ms-2 badge" style="height: 38px; display: flex; align-items: center; font-size: 14px; background-color: #6610f2; color: white;">3:00</span>
                             </div>
                             <button id="verify-code" class="btn btn-success mt-3 w-100">인증하기</button>
                         </div>
@@ -221,46 +221,9 @@
                     startTimer(180, timerDisplay);
                     
                     window.authCode = authCode;
-                    
-                    // Create centered Bootstrap alert
-                    const notification = document.createElement('div');
-                    notification.className = 'alert alert-success mt-3';
-                    notification.textContent = '인증번호가 발송되었습니다.';
-                    notification.style.position = 'fixed';
-                    notification.style.top = '10%';
-                    notification.style.left = '50%';
-                    notification.style.transform = 'translate(-50%, -50%)';
-                    notification.style.zIndex = '1000';
-                    notification.style.padding = '15px 25px';
-                    notification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-                    notification.style.minWidth = '250px';
-                    notification.style.textAlign = 'center';
-                    document.body.appendChild(notification);
-                    
-                    // Remove notification after 3 seconds
-                    setTimeout(() => {
-                        document.body.removeChild(notification);
-                    }, 3000);
+                    alert("인증번호가 발송되었습니다.");
                 } else {
-                    // Show error notification instead of alert
-                    const errorNotification = document.createElement('div');
-                    errorNotification.className = 'alert alert-danger mt-3';
-                    errorNotification.textContent = `인증번호 전송 실패: ${data.message}`;
-                    errorNotification.style.position = 'fixed';
-                    errorNotification.style.top = '50%';
-                    errorNotification.style.left = '50%';
-                    errorNotification.style.transform = 'translate(-50%, -50%)';
-                    errorNotification.style.zIndex = '1000';
-                    errorNotification.style.padding = '15px 25px';
-                    errorNotification.style.boxShadow = '0 4px 8px rgba(0,0,0,0.2)';
-                    errorNotification.style.minWidth = '250px';
-                    errorNotification.style.textAlign = 'center';
-                    document.body.appendChild(errorNotification);
-                    
-                    // Remove notification after 3 seconds
-                    setTimeout(() => {
-                        document.body.removeChild(errorNotification);
-                    }, 3000);
+                    alert(`인증번호 전송 실패: ${data.message}`);
                 }
             } catch (error) {
                 console.error(error);

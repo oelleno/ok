@@ -1,27 +1,15 @@
 async function handleSubmit() {
   try {
-    // Disable the submit button to prevent multiple submissions
-    const submitBtn = document.querySelector('.submitBtn');
-    submitBtn.disabled = true;
-
     // First save to Firebase
     await submitForm();
 
-    // Change button text to show success
-    submitBtn.textContent = '저장완료!';
-    submitBtn.style.backgroundColor = '#4CAF50';
-
-    // Then generate and download image directly without showing a popup message
+    // Then generate and download image
     downloadAsImage();
-    // The Kakao send button will not be displayed - auto-triggered in the popup instead
+    // ✅ Firestore에 `imageUrl`이 저장된 후 버튼 활성화
+    //document.getElementById('sendKakao').style.display = 'block'; //Removed as per request
   } catch (error) {
     console.error("Error submitting form:", error);
     alert(error.message || "양식 제출 중 오류가 발생했습니다.");
-
-    // Re-enable the submit button if there's an error
-    const submitBtn = document.querySelector('.submitBtn');
-    submitBtn.disabled = false;
-    submitBtn.textContent = '가입완료';
   }
 }
 
@@ -140,143 +128,61 @@ function downloadAsImage() {
             align-items: center;
           `;
 
-          // Verify that image URL has been saved to Firestore before showing Kakao button
-          const checkImageUrlSaved = async () => {
+          // Create contract copy button (sendKakao)
+          const contractBtn = document.createElement('button');
+          contractBtn.textContent = '계약서 사본발송';
+
+          // Use both click and touch events for better cross-device compatibility
+          function handleContractSend(e) {
+            if (e) e.preventDefault(); // Prevent default behavior
+
+            if (!window.docId) {
+              alert('계약서 번호를 찾을 수 없습니다.');
+              return;
+            }
+
+            // Instead of triggering click on another button, call the function directly
             try {
-              if (!window.docId) {
-                throw new Error('계약서 ID를 찾을 수 없습니다.');
-              }
-
-              // Import Firestore modules
-              const { getFirestore, doc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js");
-              const db = getFirestore();
-
-              // Check if the document has the imageUrl field
-              const docRef = doc(db, "회원가입계약서", window.docId);
-              const docSnap = await getDoc(docRef);
-
-              if (docSnap.exists() && docSnap.data().imageUrl) {
-                // Image URL exists, show the Kakao button
-                addKakaoButton();
+              if (typeof sendKakaoContract === 'function') {
+                sendKakaoContract();
               } else {
-                // Show loading message and check again after 2 seconds
-                const loadingMsg = document.createElement('div');
-                loadingMsg.textContent = '이미지 URL 확인 중...';
-                loadingMsg.style.cssText = `
-                  margin-bottom: 10px;
-                  position: absolute;
-                  top: 50%;
-                  left: 50%;
-                  transform: translate(-50%, -50%);
-                  white-space: nowrap; /* 줄바꿈 방지 */
-                `;
-                buttonContainer.appendChild(loadingMsg);
-
-                setTimeout(() => {
-                  loadingMsg.remove();
-                  checkImageUrlSaved();
-                }, 2000);
-              }
-            } catch (error) {
-              console.error('이미지 URL 확인 실패:', error);
-              const errorMsg = document.createElement('div');
-              errorMsg.textContent = '이미지 URL 확인 실패, 잠시 후 다시 시도해주세요';
-              errorMsg.style.color = 'red';
-              errorMsg.style.marginBottom = '10px';
-              buttonContainer.appendChild(errorMsg);
-            }
-          };
-
-          // Function to add Kakao button once URL is confirmed
-          const addKakaoButton = () => {
-            // Create contract copy button for Kakao send
-            const contractBtn = document.createElement('button');
-            contractBtn.textContent = '계약서 사본발송';
-            contractBtn.style.cssText = `
-              padding: 10px 20px;
-              background: #FEE500;
-              color: #000000;
-              border: none;
-              border-radius: 5px;
-              cursor: pointer;
-              font-weight: bold;
-              font-size: 16px;
-              width: 200px;
-              margin-bottom: 10px;
-            `;
-
-            // Use both click and touch events for better cross-device compatibility
-            function handleContractSend(e) {
-              if (e) e.preventDefault(); // Prevent default behavior
-
-              if (!window.docId) {
-                alert('계약서 번호를 찾을 수 없습니다.');
-                return;
-              }
-
-              // Disable the button immediately
-              contractBtn.disabled = true;
-              contractBtn.textContent = '카카오 발송 중...';
-              contractBtn.style.backgroundColor = '#cccccc';
-              contractBtn.style.cursor = 'not-allowed';
-
-              // Instead of triggering click on another button, call the function directly
-              try {
-                if (typeof sendKakaoContract === 'function') {
-                  sendKakaoContract();
-                } else {
-                  // Fallback to click if the function isn't available
-                  const sendKakaoBtn = document.getElementById('sendKakao');
-                  if (!sendKakaoBtn) {
-                    alert('카카오 발송 기능을 찾을 수 없습니다.');
-                    return;
-                  }
-                  sendKakaoBtn.click();
+                // Fallback to click if the function isn't available
+                const sendKakaoBtn = document.getElementById('sendKakao');
+                if (!sendKakaoBtn) {
+                  alert('카카오 발송 기능을 찾을 수 없습니다.');
+                  return;
                 }
-
-                // Add event listener for successful Kakao send
-                window.addEventListener('kakaoSendSuccess', () => {
-                  contractBtn.textContent = '계약서 전송완료!';
-                  contractBtn.disabled = true;
-                  contractBtn.style.backgroundColor = '#cccccc';
-                  contractBtn.style.cursor = 'not-allowed';
-                  
-                  // Find and show the receipt button when contract is sent
-                  const receiptBtn = buttonContainer.querySelector('button[textContent="영수증 저장"]');
-                  if (receiptBtn) {
-                    receiptBtn.style.display = 'block';
-                  }
-                }, { once: true });
-              } catch (error) {
-                console.error('카카오 발송 오류:', error);
-                alert('카카오 발송 중 오류가 발생했습니다.');
-                contractBtn.textContent = '계약서 사본발송';
-                contractBtn.disabled = false;
-                contractBtn.style.backgroundColor = '#FEE500';
-                contractBtn.style.cursor = 'pointer';
+                sendKakaoBtn.click();
               }
+
+              // Add event listener for successful Kakao send
+              window.addEventListener('kakaoSendSuccess', () => {
+                contractBtn.textContent = '계약서 전송완료!';
+                contractBtn.disabled = true;
+                contractBtn.style.backgroundColor = '#6c757d'; // Change to gray (Bootstrap secondary color)
+                contractBtn.style.color = 'white'; // Change text color to white for better visibility
+              }, { once: true });
+            } catch (error) {
+              console.error('카카오 발송 오류:', error);
+              alert('카카오 발송 중 오류가 발생했습니다.');
             }
+          }
 
-            contractBtn.onclick = handleContractSend;
-            contractBtn.addEventListener('touchend', handleContractSend);
+          contractBtn.onclick = handleContractSend;
+          contractBtn.addEventListener('touchend', handleContractSend);
+          contractBtn.style.cssText = `
+            padding: 10px 20px;
+            background: #FEE500;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 200px;
+          `;
 
-            // No automatic trigger - require manual click
-            contractBtn.style.cssText = `
-              padding: 10px 20px;
-              background: #FEE500;
-              color: #000000;
-              border: none;
-              border-radius: 5px;
-              cursor: pointer;
-              font-weight: bold;
-              font-size: 16px;
-              width: 200px;
-            `;
-
-            buttonContainer.appendChild(contractBtn);
-          };
-
-          // Create receipt button but don't add it yet
+          // Create receipt button
           const receiptBtn = document.createElement('button');
           receiptBtn.textContent = '영수증 저장';
           receiptBtn.onclick = function() {
@@ -297,21 +203,12 @@ function downloadAsImage() {
             font-weight: bold;
             font-size: 16px;
             width: 200px;
-            margin-top: 10px;
-            display: none; /* Initially hidden */
           `;
-          
+
+          buttonContainer.appendChild(contractBtn);
           buttonContainer.appendChild(receiptBtn);
-          
-          // Listen for the kakaoSendSuccess event to show the receipt button
-          window.addEventListener('kakaoSendSuccess', () => {
-            // Show receipt button when contract is sent
-            receiptBtn.style.display = 'block';
-          }, { once: true });
-          
-          // Check and add contract copy (Kakao) button first
-          checkImageUrlSaved();
           popup.appendChild(buttonContainer);
+
         }, 1000);
       }, 1000);
     }, 1000);
@@ -617,71 +514,18 @@ function moveFocus() {
 }
 
 function formatPhoneNumber(input) {
-  let value = input.value.replace(/\D/g, "");
-  if (value.length > 12) {
-    value = value.substring(0, 12);
-  }
-  if (value.length > 7) {
-    value = value.replace(/^(\d{3})(\d{4})(\d{0,4}).*/, "$1-$2-$3");
+  let value = input.value.replace(/\D/g, ''); // 숫자만 남기기
+
+  if (value.length >= 11) {
+    value = value.substring(0, 11); // 최대 11자리로 제한
+    value = value.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
+  } else if (value.length > 7) {
+    value = value.replace(/(\d{3})(\d{4})/, '$1-$2');
   } else if (value.length > 3) {
-    value = value.replace(/^(\d{3})(\d{0,4}).*/, "$1-$2");
-  }
-  input.value = value;
-}
-
-// 화면 중앙에 알림 메시지를 표시하는 함수
-function showCenterNotification(message, duration = 2000, type = 'success') {
-  // 기존 알림이 있으면 제거
-  const existingNotification = document.querySelector('.center-notification');
-  if (existingNotification) {
-    document.body.removeChild(existingNotification);
+    value = value.replace(/(\d{3})/, '$1-');
   }
 
-  // 새 알림 생성
-  const notification = document.createElement('div');
-  notification.className = `center-notification ${type}`;
-  notification.textContent = message;
-
-  // 스타일 적용
-  notification.style.position = 'fixed';
-  notification.style.top = '50%';
-  notification.style.left = '50%';
-  notification.style.transform = 'translate(-50%, -50%)';
-  notification.style.zIndex = '9999';
-  notification.style.padding = '15px 25px';
-  notification.style.borderRadius = '8px';
-  notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
-  notification.style.fontSize = '16px';
-  notification.style.fontWeight = 'bold';
-  notification.style.textAlign = 'center';
-  notification.style.minWidth = '200px';
-
-  // 알림 유형에 따른 색상 설정
-  if (type === 'success') {
-    notification.style.backgroundColor = '#4CAF50';
-    notification.style.color = 'white';
-  } else if (type === 'error') {
-    notification.style.backgroundColor = '#F44336';
-    notification.style.color = 'white';
-  } else if (type === 'warning') {
-    notification.style.backgroundColor = '#FF9800';
-    notification.style.color = 'white';
-  } else if (type === 'info') {
-    notification.style.backgroundColor = '#2196F3';
-    notification.style.color = 'white';
-  }
-
-  // 알림을 body에 추가
-  document.body.appendChild(notification);
-
-  // 지정된 시간 후 알림 제거
-  setTimeout(() => {
-    if (notification.parentNode) {
-      notification.parentNode.removeChild(notification);
-    }
-  }, duration);
-
-  return notification;
+  input.value = value; // 변환된 값 설정
 }
 
 // 📌 운동시간 체크
@@ -946,7 +790,7 @@ function updateAdmissionFee() {
   if (!membershipSelect || !admissionFeeInput) return;
 
   let fee = '₩ 0';
-  if (membershipSelect.value ==="New") {
+  if (membershipSelect.value === "New") {
     fee = '₩ ' + (33000).toLocaleString('ko-KR');
   }
 

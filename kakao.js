@@ -63,13 +63,12 @@ async function sendKakaoContract() {
     const userData = docSnap.data();
 
     // 🔹 imageUrl이 Firestore에 저장되기 전이면 실행 중지
-    if (!userData.contractUrl) {
+    if (!userData.imageUrl) {
       alert('계약서 이미지가 아직 업로드되지 않았습니다. 잠시 후 다시 시도해주세요.');
       return;
     }
     const customerName = userData.name;
-    const redirectUrl = userData.contractUrl.replace('https://', '');
-    // const redirectUrl = userData.redirectUrl.replace('https://', '');
+    const contractUrl = userData.imageUrl.replace('https://', '');
 
     const params = new URLSearchParams({
       'apikey': API_KEY,
@@ -87,8 +86,8 @@ async function sendKakaoContract() {
             "name": "계약서 바로가기",
             "linkType": "WL",
             "linkTypeName": "웹링크",
-            "linkPc": `https://${redirectUrl}`,
-            "linkMo": `https://${redirectUrl}`
+            "linkPc": `https://${contractUrl}`,
+            "linkMo": `https://${contractUrl}`
           }
         ]
       }),
@@ -103,11 +102,11 @@ async function sendKakaoContract() {
 
     const result = await response.json();
     console.log('카카오 알림톡 전송 결과:', result);
-    if (result.code === 0 || result.result_code === "1" || result.message === '성공적으로 전송요청 하였습니다.') {
+    if (result.code === 0 && result.message === '성공적으로 전송요청 하였습니다.') {
       window.dispatchEvent(new Event('kakaoSendSuccess'));
-    } else {
-      alert('알림톡 전송에 실패했습니다: ' + result.message);
     }
+    // Alert removed as per user request
+    console.log('알림톡이 전송되었습니다.');
   } catch (error) {
     console.error('카카오 알림톡 전송 실패:', error);
     alert('알림톡 전송에 실패했습니다.');
@@ -169,9 +168,9 @@ try {
   console.log('카카오 알림톡 전송 결과:', result);
   if (result.code === 0 && result.message === '성공적으로 전송요청 하였습니다.') {
     window.dispatchEvent(new Event('kakaoSendSuccess'));
-  } else {
-    alert('알림톡 전송에 실패했습니다: ' + result.message);
   }
+  // Alert removed as per user request
+  console.log('매니저 알림이 전송되었습니다.');
 } catch (error) {
   console.error('카카오 알림톡 전송 실패:', error);
   alert('알림톡 전송에 실패했습니다.');
