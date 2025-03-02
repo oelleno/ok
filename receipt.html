@@ -91,7 +91,7 @@
 
     .note-area {
       width: 100%;
-      min-height: 100px;
+      min-height: 70px;
       padding: 1rem;
       background-color: rgba(255, 255, 255, 0.05);
       border: 1px solid #ccc;
@@ -191,9 +191,9 @@
       <h2 class="m-0">영수증 관리</h2>
       <button class="add-receipt-btn btn btn-primary btn-contract" id="add-receipt-btn">+</button>
       <button type="button" id="excel-upload-btn" class="btn btn-primary btn-contract"
-        style="margin-left: 20px; min-width: 180px; min-height: 38px;">✅ 최종업로드</button>
+        style="margin-left: 20px; min-width: 180px; min-height: 38px; border: 3px solid #0d6efd;">✅ 최종업로드</button>
       <button type="button" id="send-manager-btn" class="btn btn-danger btn-contract"
-        style="margin-left: 10px; min-width: 180px; min-height: 38px;">📱 매니저알림전송</button>
+        style="margin-left: 10px; min-width: 180px; min-height: 38px; border: 3px solid #dc3545;">📝 매니저알림전송</button>
     </div>
 
     <div class="receipts-grid" id="receipts-grid">
@@ -512,13 +512,13 @@
 
       try {
         await sendKakaoManager();
-        button.textContent = '📱 매니저알림완료!';
+        button.textContent = '📝 매니저알림완료!';
         button.classList.replace('btn-danger', 'btn-secondary');
       } catch (error) {
         console.error('매니저 알림 전송 실패:', error);
         alert('매니저 알림 전송에 실패했습니다.');
         button.disabled = false;
-        button.textContent = '📱 매니저알림전송';
+        button.textContent = '📝 매니저알림전송';
       }
     });
   </script>
