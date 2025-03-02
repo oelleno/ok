@@ -63,7 +63,7 @@ async function sendKakaoContract() {
     const userData = docSnap.data();
 
     // 🔹 imageUrl이 Firestore에 저장되기 전이면 실행 중지
-    if (!userData.redirectUrl) {
+    if (!userData.contractUrl) {
       alert('계약서 이미지가 아직 업로드되지 않았습니다. 잠시 후 다시 시도해주세요.');
       return;
     }
