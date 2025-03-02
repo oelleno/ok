@@ -136,12 +136,12 @@ async function submitForm() {
     });
 }
 
-// irebase Storage에 업로드
+// Firebase Storage에 업로드
 // HTML에서 호출할 수 있도록 전역 함수로 설정
 async function uploadImage(fileName, blob) {
     try {
         const { getStorage, ref, uploadBytes, getDownloadURL } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js");
-        const { getFirestore, doc, updateDoc } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js");
+        const { getFirestore, doc, updateDoc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js");
 
         const storage = getStorage(); // Firebase Storage 인스턴스 가져오기
         const db = getFirestore(); // Firestore 인스턴스 가져오기
@@ -155,11 +155,26 @@ async function uploadImage(fileName, blob) {
         const downloadURL = await getDownloadURL(storageRef);
         console.log("🔗 Firebase Storage 이미지 URL:", downloadURL);
 
-        // 🔹 Firestore에 URL 저장 (window.docId 사용)
+        // 🔹 Firestore 문서 참조
         if (window.docId) {
             const docRef = doc(db, "회원가입계약서", window.docId);
-            await updateDoc(docRef, { imageUrl: downloadURL });
-            console.log("✅ Firestore에 이미지 URL 저장 완료:", downloadURL);
+            const docSnap = await getDoc(docRef);
+
+            if (!docSnap.exists()) {
+                console.error("❌ 계약서를 찾을 수 없습니다.");
+                return;
+            }
+
+            // 🔹 Firestore에 저장할 리디렉션 URL 생성
+            const redirectUrl = `https://bodystar-1b77d.web.app/view?id=${window.docId}`;
+
+            // 🔹 Firestore 문서 업데이트 (imageUrl과 redirectUrl 함께 저장)
+            await updateDoc(docRef, {
+                imageUrl: downloadURL,
+                redirectUrl: redirectUrl // 🔹 새 필드 추가
+            });
+
+            console.log("✅ Firestore에 imageUrl & redirectUrl 저장 완료:", redirectUrl);
         } else {
             console.error("❌ Firestore 문서 ID(window.docId)가 제공되지 않음.");
         }
@@ -170,6 +185,7 @@ async function uploadImage(fileName, blob) {
         throw error;
     }
 }
+
 
 
 window.submitForm = submitForm;
