@@ -70,8 +70,11 @@
                     <div id="verification-code-section" style="display: none;">
                         <div class="mb-3">
                             <label class="form-label">인증번호</label>
-                            <input type="text" class="form-control" id="verification-code" placeholder="6자리 코드 입력"
-                                inputmode="tel" lang="ko">
+                            <div class="d-flex align-items-center">
+                                <input type="text" class="form-control" id="verification-code" placeholder="6자리 코드 입력"
+                                    inputmode="tel" lang="ko">
+                                <span id="timer" class="ms-2 badge" style="height: 30px; display: flex; align-items: center; font-size: 14px; background-color: #6610f2 !important; color: white;">3:00</span>
+                            </div>
                             <button id="verify-code" class="btn btn-success mt-3 w-100">인증하기</button>
                         </div>
                     </div>
@@ -123,6 +126,51 @@
 
         let verificationId = '';
 
+        let timerInterval;
+        
+        function startTimer(duration, display) {
+            let timer = duration;
+            let minutes, seconds;
+            
+            clearInterval(timerInterval); // Clear any existing timer
+            
+            timerInterval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(timerInterval);
+                    display.textContent = "만료됨";
+                    display.classList.remove("bg-danger");
+                    display.classList.add("bg-secondary");
+                    
+                    // Disable verification and show resend button
+                    document.getElementById('verification-code').disabled = true;
+                    document.getElementById('verify-code').disabled = true;
+                    
+                    // Add resend button if it doesn't exist
+                    if (!document.getElementById('resend-code')) {
+                        const resendBtn = document.createElement('button');
+                        resendBtn.id = 'resend-code';
+                        resendBtn.className = 'btn btn-warning mt-2 w-100';
+                        resendBtn.textContent = '인증번호 재발송';
+                        resendBtn.onclick = function() {
+                            document.getElementById('send-code').click();
+                        };
+                        document.getElementById('verification-code-section').querySelector('.mb-3').appendChild(resendBtn);
+                    }
+                    
+                    // Invalidate the auth code
+                    window.authCode = null;
+                }
+            }, 1000);
+        }
+
         document.getElementById('send-code').addEventListener('click', async () => {
             const phone = document.getElementById('phone').value;
             if (!phone) return;
@@ -153,6 +201,25 @@
                     document.getElementById('verification-code-section').style.display = 'block';
                     document.getElementById('phone-section').style.display = 'none';
                     document.getElementById('admin-button').style.display = 'none';
+                    
+                    // Remove resend button if it exists
+                    const resendBtn = document.getElementById('resend-code');
+                    if (resendBtn) resendBtn.remove();
+                    
+                    // Enable verification inputs
+                    document.getElementById('verification-code').disabled = false;
+                    document.getElementById('verification-code').value = '';
+                    document.getElementById('verify-code').disabled = false;
+                    
+                    // Reset timer display
+                    const timerDisplay = document.getElementById('timer');
+                    timerDisplay.textContent = "3:00";
+                    timerDisplay.classList.remove("bg-secondary");
+                    timerDisplay.classList.add("bg-danger");
+                    
+                    // Start the countdown timer (3 minutes)
+                    startTimer(180, timerDisplay);
+                    
                     window.authCode = authCode;
                     alert("인증번호가 발송되었습니다.");
                 } else {
@@ -167,8 +234,18 @@
         document.getElementById('verify-code').addEventListener('click', () => {
             const code = document.getElementById('verification-code').value;
             if (!code) return;
+            
+            // Check if the timer is still valid
+            const timerDisplay = document.getElementById('timer');
+            if (timerDisplay.textContent === "만료됨") {
+                alert('인증번호가 만료되었습니다. 재발송해주세요.');
+                return;
+            }
 
-            if (code === window.authCode.toString()) {
+            if (window.authCode && code === window.authCode.toString()) {
+                // Stop the timer
+                clearInterval(timerInterval);
+                
                 const phoneNumber = document.getElementById('phone').value;
                 const formattedPhone = phoneNumber.replace(/(\d{3})(\d{3,4})(\d{4})/, '$1-$2-$3');
                 localStorage.setItem('verifiedPhone', formattedPhone);

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>계약서 확인 중...</title>
+    <script type="module">
+        import {initializeApp} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-app.js";
+        import {getFirestore, doc, getDoc} from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
+
+        // Firebase 설정
+        const firebaseConfig = {
+            apiKey: "AIzaSyAyP5QTMzBtz8lMEzkE4C66CjFbZ3a17QM",
+            authDomain: "bodystar-1b77d.firebaseapp.com",
+            projectId: "bodystar-1b77d",
+            storageBucket: "bodystar-1b77d.firebasestorage.app",
+            messagingSenderId: "1011822927832",
+            appId: "1:1011822927832:web:87f0d859b3baf1d8e21cad"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function redirectToContract() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const contractId = urlParams.get('id');
+            if (!contractId) {
+                document.body.innerHTML = "<h2>잘못된 요청입니다.</h2>";
+                return;
+            }
+
+            try {
+                const docRef = doc(db, "회원가입계약서", contractId);
+                const docSnap = await getDoc(docRef);
+
+                if (!docSnap.exists()) {
+                    document.body.innerHTML = "<h2>계약서를 찾을 수 없습니다.</h2>";
+                    return;
+                }
+
+                const data = docSnap.data();
+                if (!data.imageUrl) {
+                    document.body.innerHTML = "<h2>imageUrl이 존재하지 않습니다.</h2>";
+                    return;
+                }
+
+                // 🔹 Firestore에서 가져온 `imageUrl`로 이동
+                window.location.href = data.imageUrl;
+            } catch (error) {
+                console.error("리디렉션 오류:", error);
+                document.body.innerHTML = "<h2>오류가 발생했습니다.</h2>";
+            }
+        }
+
+        redirectToContract();
+    </script>
+</head>
+
+<body>
+    <h2>계약서로 이동 중...</h2>
+</body>
+
+</html>

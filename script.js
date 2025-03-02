@@ -1,15 +1,27 @@
 async function handleSubmit() {
   try {
+    // Disable the submit button to prevent multiple submissions
+    const submitBtn = document.querySelector('.submitBtn');
+    submitBtn.disabled = true;
+    
     // First save to Firebase
     await submitForm();
 
-    // Then generate and download image
+    // Change button text to show success
+    submitBtn.textContent = '저장완료!';
+    submitBtn.style.backgroundColor = '#4CAF50';
+    
+    // Then generate and download image directly without showing a popup message
     downloadAsImage();
-    // ✅ Firestore에 `imageUrl`이 저장된 후 버튼 활성화
-    document.getElementById('sendKakao').style.display = 'block';
+    // The Kakao send button will not be displayed - auto-triggered in the popup instead
   } catch (error) {
     console.error("Error submitting form:", error);
     alert(error.message || "양식 제출 중 오류가 발생했습니다.");
+    
+    // Re-enable the submit button if there's an error
+    const submitBtn = document.querySelector('.submitBtn');
+    submitBtn.disabled = false;
+    submitBtn.textContent = '가입완료';
   }
 }
 
@@ -128,19 +140,37 @@ function downloadAsImage() {
             align-items: center;
           `;
 
-          // Create contract copy button (sendKakao)
+          // Create contract copy button for Kakao send
           const contractBtn = document.createElement('button');
           contractBtn.textContent = '계약서 사본발송';
-          
+          contractBtn.style.cssText = `
+            padding: 10px 20px;
+            background: #FEE500;
+            color: #000000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 200px;
+            margin-bottom: 10px;
+          `;
+
           // Use both click and touch events for better cross-device compatibility
           function handleContractSend(e) {
             if (e) e.preventDefault(); // Prevent default behavior
-            
+
             if (!window.docId) {
               alert('계약서 번호를 찾을 수 없습니다.');
               return;
             }
-            
+
+            // Disable the button immediately
+            contractBtn.disabled = true;
+            contractBtn.textContent = '카카오 발송 중...';
+            contractBtn.style.backgroundColor = '#cccccc';
+            contractBtn.style.cursor = 'not-allowed';
+
             // Instead of triggering click on another button, call the function directly
             try {
               if (typeof sendKakaoContract === 'function') {
@@ -154,20 +184,28 @@ function downloadAsImage() {
                 }
                 sendKakaoBtn.click();
               }
-              
+
               // Add event listener for successful Kakao send
               window.addEventListener('kakaoSendSuccess', () => {
                 contractBtn.textContent = '계약서 전송완료!';
                 contractBtn.disabled = true;
+                contractBtn.style.backgroundColor = '#cccccc';
+                contractBtn.style.cursor = 'not-allowed';
               }, { once: true });
             } catch (error) {
               console.error('카카오 발송 오류:', error);
               alert('카카오 발송 중 오류가 발생했습니다.');
+              contractBtn.textContent = '계약서 사본발송';
+              contractBtn.disabled = false;
+              contractBtn.style.backgroundColor = '#FEE500';
+              contractBtn.style.cursor = 'pointer';
             }
           }
-          
+
           contractBtn.onclick = handleContractSend;
           contractBtn.addEventListener('touchend', handleContractSend);
+          
+          // No automatic trigger - require manual click
           contractBtn.style.cssText = `
             padding: 10px 20px;
             background: #FEE500;

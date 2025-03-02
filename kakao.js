@@ -102,10 +102,11 @@ async function sendKakaoContract() {
 
     const result = await response.json();
     console.log('카카오 알림톡 전송 결과:', result);
-    if (result.code === 0 && result.message === '성공적으로 전송요청 하였습니다.') {
+    if (result.code === 0 || result.result_code === "1" || result.message === '성공적으로 전송요청 하였습니다.') {
       window.dispatchEvent(new Event('kakaoSendSuccess'));
+    } else {
+      alert('알림톡 전송에 실패했습니다: ' + result.message);
     }
-    alert('알림톡이 전송되었습니다.');
   } catch (error) {
     console.error('카카오 알림톡 전송 실패:', error);
     alert('알림톡 전송에 실패했습니다.');
@@ -167,8 +168,9 @@ try {
   console.log('카카오 알림톡 전송 결과:', result);
   if (result.code === 0 && result.message === '성공적으로 전송요청 하였습니다.') {
     window.dispatchEvent(new Event('kakaoSendSuccess'));
+  } else {
+    alert('알림톡 전송에 실패했습니다: ' + result.message);
   }
-  alert('매니저 알림이 전송되었습니다.');
 } catch (error) {
   console.error('카카오 알림톡 전송 실패:', error);
   alert('알림톡 전송에 실패했습니다.');
