@@ -68,7 +68,8 @@ async function sendKakaoContract() {
       return;
     }
     const customerName = userData.name;
-    const redirectUrl = userData.redirectUrl.replace('https://', '');
+    const redirectUrl = userData.contractUrl.replace('https://', '');
+    // const redirectUrl = userData.redirectUrl.replace('https://', '');
 
     const params = new URLSearchParams({
       'apikey': API_KEY,
