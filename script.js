@@ -3,21 +3,21 @@ async function handleSubmit() {
     // Disable the submit button to prevent multiple submissions
     const submitBtn = document.querySelector('.submitBtn');
     submitBtn.disabled = true;
-    
+
     // First save to Firebase
     await submitForm();
 
     // Change button text to show success
     submitBtn.textContent = '저장완료!';
     submitBtn.style.backgroundColor = '#4CAF50';
-    
+
     // Then generate and download image directly without showing a popup message
     downloadAsImage();
     // The Kakao send button will not be displayed - auto-triggered in the popup instead
   } catch (error) {
     console.error("Error submitting form:", error);
     alert(error.message || "양식 제출 중 오류가 발생했습니다.");
-    
+
     // Re-enable the submit button if there's an error
     const submitBtn = document.querySelector('.submitBtn');
     submitBtn.disabled = false;
@@ -204,7 +204,7 @@ function downloadAsImage() {
 
           contractBtn.onclick = handleContractSend;
           contractBtn.addEventListener('touchend', handleContractSend);
-          
+
           // No automatic trigger - require manual click
           contractBtn.style.cssText = `
             padding: 10px 20px;
@@ -550,18 +550,71 @@ function moveFocus() {
 }
 
 function formatPhoneNumber(input) {
-  let value = input.value.replace(/\D/g, ''); // 숫자만 남기기
-
-  if (value.length >= 11) {
-    value = value.substring(0, 11); // 최대 11자리로 제한
-    value = value.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3');
-  } else if (value.length > 7) {
-    value = value.replace(/(\d{3})(\d{4})/, '$1-$2');
+  let value = input.value.replace(/\D/g, "");
+  if (value.length > 12) {
+    value = value.substring(0, 12);
+  }
+  if (value.length > 7) {
+    value = value.replace(/^(\d{3})(\d{4})(\d{0,4}).*/, "$1-$2-$3");
   } else if (value.length > 3) {
-    value = value.replace(/(\d{3})/, '$1-');
+    value = value.replace(/^(\d{3})(\d{0,4}).*/, "$1-$2");
+  }
+  input.value = value;
+}
+
+// 화면 중앙에 알림 메시지를 표시하는 함수
+function showCenterNotification(message, duration = 2000, type = 'success') {
+  // 기존 알림이 있으면 제거
+  const existingNotification = document.querySelector('.center-notification');
+  if (existingNotification) {
+    document.body.removeChild(existingNotification);
   }
 
-  input.value = value; // 변환된 값 설정
+  // 새 알림 생성
+  const notification = document.createElement('div');
+  notification.className = `center-notification ${type}`;
+  notification.textContent = message;
+
+  // 스타일 적용
+  notification.style.position = 'fixed';
+  notification.style.top = '50%';
+  notification.style.left = '50%';
+  notification.style.transform = 'translate(-50%, -50%)';
+  notification.style.zIndex = '9999';
+  notification.style.padding = '15px 25px';
+  notification.style.borderRadius = '8px';
+  notification.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
+  notification.style.fontSize = '16px';
+  notification.style.fontWeight = 'bold';
+  notification.style.textAlign = 'center';
+  notification.style.minWidth = '200px';
+
+  // 알림 유형에 따른 색상 설정
+  if (type === 'success') {
+    notification.style.backgroundColor = '#4CAF50';
+    notification.style.color = 'white';
+  } else if (type === 'error') {
+    notification.style.backgroundColor = '#F44336';
+    notification.style.color = 'white';
+  } else if (type === 'warning') {
+    notification.style.backgroundColor = '#FF9800';
+    notification.style.color = 'white';
+  } else if (type === 'info') {
+    notification.style.backgroundColor = '#2196F3';
+    notification.style.color = 'white';
+  }
+
+  // 알림을 body에 추가
+  document.body.appendChild(notification);
+
+  // 지정된 시간 후 알림 제거
+  setTimeout(() => {
+    if (notification.parentNode) {
+      notification.parentNode.removeChild(notification);
+    }
+  }, duration);
+
+  return notification;
 }
 
 // 📌 운동시간 체크
