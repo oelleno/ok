@@ -8,6 +8,35 @@
     <title>계약서 선택</title>
     <link href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css" rel="stylesheet">
     <style>
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            min-width: 250px;
+        }
+        
+        .notification.success {
+            background-color: #28a745;
+        }
+        
+        .notification.error {
+            background-color: #dc3545;
+        }
+        
+        .notification.show {
+            opacity: 1;
+        }
+        
         .container {
             display: flex;
             justify-content: center;
@@ -44,6 +73,45 @@
 <body>
     <script>
         localStorage.clear(); // 모든 localStorage 데이터 삭제
+        
+        // Function to show in-page notification
+        function showNotification(message, type) {
+            // Check if notification element already exists
+            let notification = document.getElementById('notification');
+            
+            // If not, create it
+            if (!notification) {
+                notification = document.createElement('div');
+                notification.id = 'notification';
+                notification.className = 'alert alert-info';
+                notification.style.position = 'fixed';
+                notification.style.top = '20px';
+                notification.style.left = '50%';
+                notification.style.transform = 'translateX(-50%)';
+                notification.style.padding = '12px 20px';
+                notification.style.borderRadius = '5px';
+                notification.style.zIndex = '9999';
+                notification.style.opacity = '0';
+                notification.style.transition = 'opacity 0.3s ease-in-out';
+                notification.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)';
+                notification.style.textAlign = 'center';
+                notification.style.minWidth = '250px';
+                document.body.appendChild(notification);
+            }
+            
+            // Set notification content
+            notification.innerHTML = `<p class="mb-2"><strong>${message}</strong></p>`;
+            
+            // Show notification
+            setTimeout(() => {
+                notification.style.opacity = '1';
+            }, 10);
+            
+            // Hide after 3 seconds
+            setTimeout(() => {
+                notification.style.opacity = '0';
+            }, 3000);
+        }
     </script>
 
     <div class="container">
@@ -71,9 +139,9 @@
                         <div class="mb-3">
                             <label class="form-label">인증번호</label>
                             <div class="d-flex align-items-center">
-                                <input type="text" class="form-control" id="verification-code" placeholder="6자리 코드 입력"
+                                <input type="text" class="form-control" id="verification-code" placeholder="4자리 코드 입력"
                                     inputmode="tel" lang="ko">
-                                <span id="timer" class="ms-2 badge" style="height: 38px; display: flex; align-items: center; font-size: 14px; background-color: #6610f2; color: white;">3:00</span>
+                                <span id="timer" class="ms-2 badge" style="height: 38px; display: flex; align-items: center; font-size: 14px; background-color: #6610f2 !important; color: white;">3:00</span>
                             </div>
                             <button id="verify-code" class="btn btn-success mt-3 w-100">인증하기</button>
                         </div>
@@ -221,13 +289,14 @@
                     startTimer(180, timerDisplay);
                     
                     window.authCode = authCode;
-                    alert("인증번호가 발송되었습니다.");
+                    // Create in-page notification
+                    showNotification("인증번호가 발송되었습니다.", "success");
                 } else {
-                    alert(`인증번호 전송 실패: ${data.message}`);
+                    showNotification(`인증번호 전송 실패: ${data.message}`, "error");
                 }
             } catch (error) {
                 console.error(error);
-                alert('인증번호 전송 실패');
+                showNotification('인증번호 전송 실패', "error");
             }
         });
 
@@ -254,14 +323,78 @@
                 document.getElementById('verification-code-section').style.display = 'none';
                 document.getElementById('verification-success').style.display = 'block';
 
-                setTimeout(() => {
-                    document.getElementById('verification-section').style.display = 'none';
-                    document.getElementById('admin-section').style.display = 'block';
-                }, 1500);
+                // Check if user is existing member
+                checkExistingMember(formattedPhone);
             } else {
                 alert('잘못된 인증번호입니다.');
             }
         });
+        
+        // Function to check if the user is an existing member and handle accordingly
+        async function checkExistingMember(phoneNumber) {
+            try {
+                const querySnapshot = await db.collection("회원가입계약서").get();
+                let memberFound = false;
+                let memberData = null;
+
+                querySnapshot.forEach((doc) => {
+                    if (doc.data().contact === phoneNumber) {
+                        memberFound = true;
+                        memberData = doc.data();
+                    }
+                });
+
+                // Display member info in the verification section if found
+                document.getElementById('verification-success').style.display = 'none';
+                
+                const memberInfoDiv = document.createElement('div');
+                memberInfoDiv.className = 'mt-3';
+                memberInfoDiv.style.textAlign = 'center';
+                
+                if (memberFound) {
+                    memberInfoDiv.innerHTML = `
+                        <div class="alert alert-info">
+                            <p class="mb-2"><strong>기존 회원입니다!</strong></p>
+                            <p class="mb-1">이름: ${memberData.name}</p>
+                            <p class="mb-3">생년월일: ${memberData.birthdate}</p>
+                            <div style="display: flex; gap: 10px; justify-content: center;">
+                                <button onclick="window.location.href='membership.html?phone=${phoneNumber}&load=true'" class="btn btn-success">정보 불러오기</button>
+                                <button onclick="window.location.href='membership.html'" class="btn btn-primary">신규 입력</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Redirect to membership page for new members after a short delay
+                    memberInfoDiv.innerHTML = `
+                        <div class="alert alert-warning">
+                            <p class="mb-2"><strong>신규 고객입니다!</strong></p>
+                            <p class="mb-3">회원가입 페이지로 이동합니다.</p>
+                            <div class="d-flex justify-content-center">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        window.location.href = 'membership.html';
+                    }, 1500);
+                }
+                
+                // Add the member info display to the verification section
+                const verificationSection = document.getElementById('verification-section');
+                if (verificationSection.querySelector('.member-info-display')) {
+                    verificationSection.querySelector('.member-info-display').remove();
+                }
+                memberInfoDiv.classList.add('member-info-display');
+                verificationSection.appendChild(memberInfoDiv);
+                
+            } catch (error) {
+                console.error("Error checking member:", error);
+                alert('오류가 발생했습니다.');
+                window.location.href = 'membership.html';
+            }
+        }
 
 
 

@@ -14,7 +14,7 @@ async function handleSubmit() {
 }
 
 function validateForm() {
-  const requiredFields = ['name', 'contact', 'userpw_re', 'main_address', 'membership'];
+  const requiredFields = ['name', 'contact', 'birthdate', 'main_address', 'membership'];
   for (const fieldId of requiredFields) {
     const field = document.getElementById(fieldId);
     if (!field || !field.value.trim()) {
@@ -128,86 +128,33 @@ function downloadAsImage() {
             align-items: center;
           `;
 
-          // Create contract copy button (sendKakao)
-          const contractBtn = document.createElement('button');
-          contractBtn.textContent = '계약서 사본발송';
-
-          // Use both click and touch events for better cross-device compatibility
-          function handleContractSend(e) {
-            if (e) e.preventDefault(); // Prevent default behavior
-
-            if (!window.docId) {
-              alert('계약서 번호를 찾을 수 없습니다.');
-              return;
-            }
-
-            // Instead of triggering click on another button, call the function directly
-            try {
-              if (typeof sendKakaoContract === 'function') {
-                sendKakaoContract();
-              } else {
-                // Fallback to click if the function isn't available
-                const sendKakaoBtn = document.getElementById('sendKakao');
-                if (!sendKakaoBtn) {
-                  alert('카카오 발송 기능을 찾을 수 없습니다.');
-                  return;
-                }
-                sendKakaoBtn.click();
-              }
-
-              // Add event listener for successful Kakao send
-              window.addEventListener('kakaoSendSuccess', () => {
-                contractBtn.textContent = '계약서 전송완료!';
-                contractBtn.disabled = true;
-                contractBtn.style.backgroundColor = '#6c757d'; // Change to gray (Bootstrap secondary color)
-                contractBtn.style.color = 'white'; // Change text color to white for better visibility
-              }, { once: true });
-            } catch (error) {
-              console.error('카카오 발송 오류:', error);
-              alert('카카오 발송 중 오류가 발생했습니다.');
-            }
-          }
-
-          contractBtn.onclick = handleContractSend;
-          contractBtn.addEventListener('touchend', handleContractSend);
-          contractBtn.style.cssText = `
-            padding: 10px 20px;
-            background: #FEE500;
-            color: #000000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            width: 200px;
-          `;
-
-          // Create receipt button
+          // 영수증 저장 버튼 생성
           const receiptBtn = document.createElement('button');
           receiptBtn.textContent = '영수증 저장';
           receiptBtn.onclick = function() {
-            if (!window.docId) {
-              alert('계약서 번호를 찾을 수 없습니다.');
-              return;
-            }
-            localStorage.setItem('receipt_doc_id', window.docId);
-            window.location.href = 'receipt.html';
+              if (!window.docId) {
+                  alert('계약서 번호를 찾을 수 없습니다.');
+                  return;
+              }
+              localStorage.setItem('receipt_doc_id', window.docId);
+              window.location.href = 'receipt.html';
           };
           receiptBtn.style.cssText = `
-            padding: 10px 20px;
-            background: #0078D7;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 16px;
-            width: 200px;
+              padding: 10px 20px;
+              background: #0078D7;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 16px;
+              width: 200px;
           `;
 
-          buttonContainer.appendChild(contractBtn);
+          // 버튼을 팝업에 추가
           buttonContainer.appendChild(receiptBtn);
           popup.appendChild(buttonContainer);
+
 
         }, 1000);
       }, 1000);
@@ -378,7 +325,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function sendit() {
   const name = document.getElementById('name'); // 이름
   const contact = document.getElementById('contact'); // 연락처
-  const birthdate = document.getElementById('userpw_re'); // 생년월일
+  const birthdate = document.getElementById('birthdate'); // 생년월일
   const membership = document.getElementById('membership'); // 회원권 선택
   const rentalMonths = document.getElementById('rental_months'); // 운동복 대여 개월수
   const lockerMonths = document.getElementById('locker_months'); // 라커 대여 개월수
