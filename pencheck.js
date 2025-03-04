@@ -1,42 +1,66 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // 🔹 형광펜 캔버스 생성
     const canvas = document.createElement("canvas");
     document.body.appendChild(canvas);
     canvas.id = "drawingCanvas";
     canvas.style.position = "fixed";
     canvas.style.top = "0";
     canvas.style.left = "0";
-    canvas.style.width = "100%";
-    canvas.style.height = "100%";
-    canvas.style.pointerEvents = "none";
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     canvas.style.zIndex = "99";
-    canvas.style.touchAction = "none"; // Added for iPad
+    canvas.style.pointerEvents = "none"; 
+    canvas.style.display = "none"; 
 
     const ctx = canvas.getContext("2d");
+    let lines = [];
+    let isDrawing = false;
+    let lastPoint = null;
+    const fadeOutDuration = 10000; // 🔹 형광펜이 10초 후 점점 사라짐
+    let penActive = false; 
+
+    // 🔹 펜 버튼 생성
+    const penButton = document.createElement("button");
+    penButton.innerText = "🖊️";
+    penButton.style.position = "fixed";
+    penButton.style.right = "10px"; // 🔹 화면 오른쪽 끝에 위치
+    penButton.style.top = "50%";
+    penButton.style.transform = "translateY(-50%)";
+    penButton.style.padding = "10px 15px";
+    penButton.style.backgroundColor = "#FFD700"; 
+    penButton.style.color = "black";
+    penButton.style.border = "none";
+    penButton.style.borderRadius = "8px";
+    penButton.style.cursor = "pointer";
+    penButton.style.zIndex = "100";
+    penButton.style.fontSize = "20px";
+    penButton.style.fontWeight = "bold";
+    penButton.style.transition = "background-color 0.2s ease";
+    document.body.appendChild(penButton);
+
+    // 🔹 펜 버튼 클릭 시 형광펜 On/Off
+    penButton.addEventListener("click", () => {
+        penActive = !penActive;
+        if (penActive) {
+            canvas.style.display = "block"; 
+            canvas.style.pointerEvents = "auto"; 
+            penButton.style.backgroundColor = "#FFA500"; 
+        } else {
+            canvas.style.display = "none"; 
+            canvas.style.pointerEvents = "none"; 
+            penButton.style.backgroundColor = "#FFD700"; 
+        }
+    });
 
     function resizeCanvas() {
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
     }
-    resizeCanvas();
+
     window.addEventListener("resize", resizeCanvas);
 
-    let isDrawing = false;
-    let isDragging = false;
-    let lastPoint = null;
-    let initialY = null;
-    let lines = [];
-    const fadeOutDuration = 3000;
-
-    class Line {
-        constructor() {
-            this.points = [];
-            this.opacity = 0.7;
-            this.startTime = Date.now();
-        }
-    }
-
     function getPoint(e) {
-        if (e.type.includes('touch')) {
+        if (e.type.includes("touch")) {
             return {
                 x: e.touches[0].clientX,
                 y: e.touches[0].clientY
@@ -48,63 +72,28 @@ document.addEventListener("DOMContentLoaded", function () {
         };
     }
 
-    function isOverRestrictedField(x, y) {
-        const elements = document.elementsFromPoint(x, y);
-        return elements.some(el => ["input", "select"].includes(el.tagName.toLowerCase()));
-    }
-
     function startDrawing(e) {
+        if (!penActive) return;
+
         e.preventDefault();
-        e.stopPropagation();
-        const point = getPoint(e);
-        initialY = point.y;
-
-        if (isOverRestrictedField(point.x, point.y)) {
-            isDragging = false;
-            return;
-        }
-
         isDrawing = true;
-        isDragging = true;
-        lastPoint = point;
-        lines.push(new Line());
-        
-        if (e.type.includes('touch')) {
-            const touch = e.touches[0];
-            lastPoint = {
-                x: touch.clientX,
-                y: touch.clientY
-            };
-        }
+        lastPoint = getPoint(e);
+        lines.push({ points: [lastPoint], opacity: 0.7, startTime: Date.now() });
         draw(e);
     }
 
     function draw(e) {
-        if (!isDrawing) return;
+        if (!isDrawing || !penActive) return;
+
         e.preventDefault();
-
         const point = getPoint(e);
-
-        if (lastPoint && Math.abs(point.y - initialY) > 10) {
-            stopDrawing();
-            return;
-        }
 
         if (lines.length > 0 && lastPoint) {
             const lastLine = lines[lines.length - 1];
-            const distance = Math.hypot(point.x - lastPoint.x, point.y - lastPoint.y);
-
-            if (distance > 5) {
-                const midpoint = {
-                    x: (point.x + lastPoint.x) / 2,
-                    y: (point.y + lastPoint.y) / 2,
-                };
-                lastLine.points.push(midpoint);
-            }
+            lastLine.points.push(point);
         }
 
         lastPoint = point;
-        lines[lines.length - 1].points.push(point);
         drawLines();
     }
 
@@ -130,10 +119,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function stopDrawing() {
-        if (!isDragging) return;
         isDrawing = false;
-        isDragging = false;
-        lastPoint = null;
     }
 
     function animate() {
@@ -147,28 +133,15 @@ document.addEventListener("DOMContentLoaded", function () {
         requestAnimationFrame(animate);
     }
 
-    // Touch Events
-    // Touch Events with improved handling
-    canvas.addEventListener("touchstart", startDrawing, { passive: false });
-    canvas.addEventListener("touchmove", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        draw(e);
-    }, { passive: false });
-    canvas.addEventListener("touchend", (e) => {
-        e.preventDefault();
-        stopDrawing();
-    });
-    canvas.addEventListener("touchcancel", (e) => {
-        e.preventDefault();
-        stopDrawing();
-    });
-
-    // Mouse Events
     canvas.addEventListener("mousedown", startDrawing);
     canvas.addEventListener("mousemove", draw);
     canvas.addEventListener("mouseup", stopDrawing);
-    canvas.addEventListener("mouseout", stopDrawing);
+    canvas.addEventListener("mouseleave", stopDrawing);
+
+    canvas.addEventListener("touchstart", startDrawing, { passive: false });
+    canvas.addEventListener("touchmove", draw, { passive: false });
+    canvas.addEventListener("touchend", stopDrawing);
+    canvas.addEventListener("touchcancel", stopDrawing);
 
     animate();
 });
