@@ -115,7 +115,7 @@ async function sendKakaoMember() {
     const userData = await getContractData();
     const customerName = userData.name;
     const customerPhone = userData.contact; // 회원이 입력한 전화번호
-    const contractUrl = oelleno.github.io/hello/;
+    const contractUrl = oelleno.github.io/hello/
 
     if (!customerPhone) {
       throw new Error('회원 전화번호를 찾을 수 없습니다.');
