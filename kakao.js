@@ -131,7 +131,7 @@ async function sendKakaoMember() {
       'sender': SENDER_PHONE,
       'receiver_1': customerPhone, 
       'subject_1': '계약서',
-      'message_1': `[${COMPANY_NAME}]\n안녕하세요. ${customerName}님!\n${COMPANY_NAME}에 등록해주셔서 감사드립니다!`,
+      'message_1': `안녕하세요. ${customerName}님!\n${COMPANY_NAME}에 등록해주셔서 감사드립니다!`,
       'button_1': JSON.stringify({
         "button": [
           { "name": "채널추가", "linkType": "AC", "linkTypeName": "채널 추가" },
