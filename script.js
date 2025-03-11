@@ -1,9 +1,10 @@
+// 양식 제출 핸들러 함수
 async function handleSubmit() {
   try {
-    // First save to Firebase
+    // 먼저 Firebase에 데이터 저장
     await submitForm();
 
-    // Then generate and download image
+    // 이미지 생성 및 다운로드
     downloadAsImage();
     // ✅ Firestore에 `imageUrl`이 저장된 후 버튼 활성화
     //document.getElementById('sendKakao').style.display = 'block'; //Removed as per request
@@ -13,7 +14,23 @@ async function handleSubmit() {
   }
 }
 
+// 일일권 제출 핸들러 함수
+async function handleOnedaySubmit() {
+  try {
+    // 먼저 Firebase에 데이터 저장
+    await submitOnedayForm();
+
+    // 이미지 생성 및 다운로드
+    downloadOnedayAsImage();
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    alert(error.message || "양식 제출 중 오류가 발생했습니다.");
+  }
+}
+
+// 양식 유효성 검사 함수
 function validateForm() {
+  // 필수 입력 필드 목록
   const requiredFields = ['name', 'contact', 'birthdate', 'main_address', 'membership'];
   for (const fieldId of requiredFields) {
     const field = document.getElementById(fieldId);
@@ -24,6 +41,7 @@ function validateForm() {
   return true;
 }
 
+// 계약서를 이미지로 변환하고 다운로드하는 함수
 function downloadAsImage() {
   const container = document.querySelector('.container');
   html2canvas(container, {
@@ -33,31 +51,33 @@ function downloadAsImage() {
   }).then(canvas => {
     console.log("📸 이미지 변환 완료");
 
-    // Get current date in YYMMDD format
+    // 현재 날짜를 YYMMDD 형식으로 가져오기
     const now = new Date();
     const year = now.getFullYear().toString().slice(2);
     const month = (now.getMonth() + 1).toString().padStart(2, '0');
     const day = now.getDate().toString().padStart(2, '0');
     const dateStr = year + month + day;
 
-    // Get member name
+    // 회원 이름 가져오기
     const memberName = document.getElementById('name').value;
 
-    // Get the docId from Firebase submission
+    // Firebase 제출에서 docId 가져오기
     const dailyNumber = localStorage.getItem('current_doc_number');
     if (!dailyNumber) {
       console.error('Document number not found');
       return;
     }
 
-    // Create filename using Firebase document number
+    // Firebase 문서 번호를 사용하여 파일 이름 생성
     const fileName = `${dateStr}_${dailyNumber}_${memberName}.jpg`;
 
-    // Convert canvas to blob and upload to Firebase Storage
+    // 캔버스를 Blob으로 변환하고 Firebase Storage에 업로드
     canvas.toBlob(async (blob) => {
       try {
+        // Firebase Storage에 이미지 업로드
         await window.uploadImage(fileName, blob);
 
+        // 로컬 다운로드 링크 생성
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = fileName;
@@ -137,6 +157,155 @@ function downloadAsImage() {
                   return;
               }
               localStorage.setItem('receipt_doc_id', window.docId);
+              window.location.href = 'receipt.html';
+          };
+          receiptBtn.style.cssText = `
+              padding: 10px 20px;
+              background: #0078D7;
+              color: white;
+              border: none;
+              border-radius: 5px;
+              cursor: pointer;
+              font-weight: bold;
+              font-size: 16px;
+              width: 200px;
+          `;
+
+          // 버튼을 팝업에 추가
+          buttonContainer.appendChild(receiptBtn);
+          popup.appendChild(buttonContainer);
+
+
+        }, 1000);
+      }, 1000);
+    }, 1000);
+
+    document.body.appendChild(popup);
+    console.log("🎉 팝업 생성 완료");
+
+
+  }).catch(error => {
+    console.error("❌ html2canvas 실행 중 오류 발생:", error);
+  });
+}
+
+// 일일권 신청서를 이미지로 변환하고 다운로드하는 함수
+function downloadOnedayAsImage() {
+  const container = document.querySelector('.container');
+  html2canvas(container, {
+    backgroundColor: '#f5f5f5',
+    scale: 1.0,
+    useCORS: true
+  }).then(canvas => {
+    console.log("📸 이미지 변환 완료");
+
+    // 현재 날짜를 YYMMDD 형식으로 가져오기
+    const now = new Date();
+    const year = now.getFullYear().toString().slice(2);
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const dateStr = year + month + day;
+
+    // 회원 이름 가져오기
+    const memberName = document.getElementById('name').value;
+
+    // Firebase 제출에서 docId 가져오기
+    const dailyNumber = localStorage.getItem('current_doc_number');
+    if (!dailyNumber) {
+      console.error('Document number not found');
+      return;
+    }
+
+    // Firebase 문서 번호를 사용하여 파일 이름 생성
+    const fileName = `${dateStr}_${dailyNumber}_${memberName}.jpg`;
+
+    // 캔버스를 Blob으로 변환하고 Firebase Storage에 업로드
+    canvas.toBlob(async (blob) => {
+      try {
+        // Firebase Storage에 이미지 업로드
+        await window.uploadImage(fileName, blob);
+
+        // 로컬 다운로드 링크 생성
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+      } catch (error) {
+        console.error("이미지 업로드 실패:", error);
+      }
+    }, 'image/jpeg');
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    `;
+    document.body.appendChild(overlay);
+
+    const popup = document.createElement('div');
+    popup.style.cssText = `
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      z-index: 1000;
+      text-align: center;
+      min-width: 300px;
+      min-height: 180px;
+      font-size: 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    `;
+
+    const statusText = document.createElement('h3');
+    statusText.textContent = '신청서 업로드 중...';
+    statusText.style.cssText = `
+      margin-top: 0px;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap; /* 줄바꿈 방지 */
+    `;
+    popup.appendChild(statusText);
+
+    setTimeout(() => {
+      statusText.textContent = '신청서 업로드 완료!';
+      setTimeout(() => {
+        statusText.textContent = '신청서URL 저장 완료!';
+        setTimeout(() => {
+          statusText.style.display = 'none';
+
+          // Create button container for vertical layout
+          const buttonContainer = document.createElement('div');
+          buttonContainer.style.cssText = `
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+          `;
+
+          // 영수증 저장 버튼 생성
+          const receiptBtn = document.createElement('button');
+          receiptBtn.textContent = '영수증 저장';
+          receiptBtn.onclick = function() {
+              if (!window.docId) {
+                  alert('신청서 번호를 찾을 수 없습니다.');
+                  return;
+              }
+              localStorage.setItem('receipt_doc_id', window.docId);
+              localStorage.setItem('collection_name', 'Onedaypass'); // 컬렉션 이름 저장
               window.location.href = 'receipt.html';
           };
           receiptBtn.style.cssText = `
@@ -642,17 +811,17 @@ function showCardPaymentPopup() {
       if (description) {
         descInput.value = description;
       }
-      
+
       // Apply read-only and faded styling if needed
       if (isReadOnly) {
         descInput.readOnly = true;
         descInput.style.backgroundColor = '#f5f5f5';
       }
-      
+
       if (isFaded) {
         descInput.style.color = '#aaa';
         descInput.style.fontStyle = 'italic';
-        
+
         // Add focus and input event listeners to handle placeholder behavior
         descInput.addEventListener('focus', function() {
           if (this.value === '(직접입력)') {
@@ -661,7 +830,7 @@ function showCardPaymentPopup() {
             this.style.fontStyle = 'normal';
           }
         });
-        
+
         descInput.addEventListener('blur', function() {
           if (this.value === '') {
             this.value = '(직접입력)';
@@ -669,7 +838,7 @@ function showCardPaymentPopup() {
             this.style.fontStyle = 'italic';
           }
         });
-        
+
         descInput.addEventListener('input', function() {
           this.style.color = '#000';
           this.style.fontStyle = 'normal';
@@ -767,6 +936,34 @@ document.addEventListener('DOMContentLoaded', function() {
         showCardPaymentPopup();
       }
     });
+  }
+  
+  // Add null checks for other elements before adding event listeners
+  const membershipSelect = document.getElementById('membership');
+  const rentalMonthsSelect = document.getElementById('rental_months');
+  const lockerMonthsSelect = document.getElementById('locker_months');
+  const membershipMonthsSelect = document.getElementById('membership_months');
+  const discountInput = document.getElementById('discount');
+
+  if (membershipSelect) {
+    membershipSelect.addEventListener('change', updateAdmissionFee);
+  }
+  if (rentalMonthsSelect) {
+    rentalMonthsSelect.addEventListener('change', () => updateRentalPrice(rentalMonthsSelect));
+  }
+  if (lockerMonthsSelect) {
+    lockerMonthsSelect.addEventListener('change', () => updateLockerPrice(lockerMonthsSelect));
+  }
+  if (membershipMonthsSelect) {
+    membershipMonthsSelect.addEventListener('change', () => updateMembershipFee(membershipMonthsSelect));
+  }
+  if (discountInput) {
+    discountInput.addEventListener('input', calculateTotal);
+  }
+
+  // Only calculate total if elements exist
+  if (document.getElementById('total_amount')) {
+    calculateTotal(); // Initial calculation
   }
 });
 
@@ -918,7 +1115,7 @@ function showDiscountPopup() {
     const deleteBtn = document.createElement('button');
     deleteBtn.innerHTML = '×';
     deleteBtn.style.cssText = `
-      width: 24px;
+      width      width: 24px;
       height: 24px;
       border-radius: 4px;
       border: none;
@@ -1043,15 +1240,27 @@ document.addEventListener('DOMContentLoaded', function() {
   const membershipMonthsSelect = document.getElementById('membership_months');
   const discountInput = document.getElementById('discount');
 
-  membershipSelect.addEventListener('change', updateAdmissionFee);
-  rentalMonthsSelect.addEventListener('change', () => updateRentalPrice(rentalMonthsSelect));
-  lockerMonthsSelect.addEventListener('change', () => updateLockerPrice(lockerMonthsSelect));
-  membershipMonthsSelect.addEventListener('change', () => updateMembershipFee(membershipMonthsSelect));
-  //Event Listener for Discount Input
-  discountInput.addEventListener('input', calculateTotal);
+  // Only add event listeners if the elements exist (membership page)
+  if (membershipSelect) {
+    membershipSelect.addEventListener('change', updateAdmissionFee);
+  }
+  if (rentalMonthsSelect) {
+    rentalMonthsSelect.addEventListener('change', () => updateRentalPrice(rentalMonthsSelect));
+  }
+  if (lockerMonthsSelect) {
+    lockerMonthsSelect.addEventListener('change', () => updateLockerPrice(lockerMonthsSelect));
+  }
+  if (membershipMonthsSelect) {
+    membershipMonthsSelect.addEventListener('change', () => updateMembershipFee(membershipMonthsSelect));
+  }
+  if (discountInput) {
+    discountInput.addEventListener('input', calculateTotal);
+  }
 
-  calculateTotal(); // Initial calculation
-
+  // Only calculate total if we're on a page that has total_amount element
+  if (document.getElementById('total_amount')) {
+    calculateTotal(); // Initial calculation
+  }
 });
 
 function getCombinedPaymentTotal() {
