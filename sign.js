@@ -151,6 +151,10 @@ function initDictationCanvas(targetWord, callback) {
   /* 지우기 버튼 클릭 이벤트 처리 */
   clearBtn.addEventListener('click', () => {
     dictationCtx.clearRect(0, 0, dictationCanvas.width, dictationCanvas.height);
+    // 이미 저장된 서명은 유지하도록 콜백 호출 방지
+    if (event) {
+      event.stopPropagation();
+    }
   });
 
   /* 서명 완료 버튼 클릭 이벤트 처리 */

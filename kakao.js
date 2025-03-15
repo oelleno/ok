@@ -1,4 +1,3 @@
-
 import { doc, getDoc } from "https://www.gstatic.com/firebasejs/11.3.0/firebase-firestore.js";
 
 // Firebase 초기화 함수
@@ -9,8 +8,26 @@ async function initializeFirebase() {
     const { getStorage } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-storage.js");
     const { getAuth } = await import("https://www.gstatic.com/firebasejs/11.3.0/firebase-auth.js");
 
-    const response = await fetch("https://us-central1-bodystar-1b77d.cloudfunctions.net/getFirebaseConfig");
-    const firebaseConfig = await response.json();
+    let firebaseConfig;
+    try {
+      const response = await fetch("https://us-central1-bodystar-1b77d.cloudfunctions.net/getFirebaseConfig", {
+        method: 'GET',
+        mode: 'cors',
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP 오류: ${response.status}`);
+      }
+
+      firebaseConfig = await response.json();
+      console.log("Firebase 설정 가져오기 성공 (카카오)");
+    } catch (error) {
+      console.error("Firebase 설정을 가져오는데 실패했습니다:", error);
+      throw error;
+    }
+
     const app = initializeApp(firebaseConfig, "kakao-app");
 
     return {
@@ -150,27 +167,60 @@ async function getContractData() {
     const { db } = await import("./firebase.js");
     const dbInstance = await db;
 
-    // Firestore에서 회원 계약 문서 가져오기
-    const docRef = doc(dbInstance, "Membership", window.docId);
-    const docSnap = await getDoc(docRef);
+    // 문서 ID에서 브랜치 코드 추출 (예: GJ250313 -> GJ 또는 YM250313 -> YM)
+    const branchCode = window.docId.substring(0, 2);
+    console.log(`문서 ID에서 추출한 브랜치 코드: ${branchCode}`);
+    
+    // 브랜치 코드를 기반으로 올바른 지점명 선택
+    let branch = '';
+    if (branchCode === 'GJ') {
+      branch = '관저점';
+    } else if (branchCode === 'YM') {
+      branch = '용문가장점';
+    } else {
+      // 브랜치 선택요소에서 지점명 가져오기 (폴백)
+      branch = document.getElementById('branch')?.value || localStorage.getItem('branch') || "관저점";
+    }
+    
+    console.log(`문서 조회 지점: ${branch} (코드: ${branchCode})`);
+    const year = new Date().getFullYear().toString();
 
+    // 이름 또는 기타 접미사가 붙은 경우 처리 (예: Y250313_001_소피아 -> Y250313_001)
+    const baseDocId = window.docId.split('_').slice(0, 2).join('_');
+    console.log("검색 docId:", window.docId);
+    console.log("기본 docId:", baseDocId);
+
+    // 원본 ID로 먼저 시도
+    const docRef = doc(dbInstance, branch, year, "Membership", window.docId);
+    let docSnap = await getDoc(docRef);
+
+    // 원본 ID로 찾지 못한 경우, 기본 ID로 시도
+    if (!docSnap.exists() && baseDocId !== window.docId) {
+      console.log(`${window.docId}로 문서를 찾지 못해 ${baseDocId}로 재시도합니다.`);
+      const baseDocRef = doc(dbInstance, branch, year, "Membership", baseDocId);
+      docSnap = await getDoc(baseDocRef);
+    }
+
+    // 현재 폴더 구조에서 문서를 찾지 못한 경우, 레거시 구조 확인
     if (!docSnap.exists()) {
-      throw new Error('계약서를 찾을 수 없습니다. docId: ' + window.docId);
+      // 원본 ID로 시도
+      const legacyDocRef = doc(dbInstance, "Membership", window.docId);
+      let legacyDocSnap = await getDoc(legacyDocRef);
+
+      // 기본 ID로 시도
+      if (!legacyDocSnap.exists() && baseDocId !== window.docId) {
+        const legacyBaseDocRef = doc(dbInstance, "Membership", baseDocId);
+        legacyDocSnap = await getDoc(legacyBaseDocRef);
+      }
+
+      if (!legacyDocSnap.exists()) {
+        throw new Error('계약서를 찾을 수 없습니다. docId: ' + window.docId);
+      }
+
+      return legacyDocSnap.data();
     }
 
-    const userData = docSnap.data();
-    console.log("사용자 데이터 조회 성공:", userData.name);
-
-    // 필수 정보 확인
-    if (!userData.imageUrl) {
-      throw new Error('계약서 이미지가 아직 업로드되지 않았습니다. 잠시 후 다시 시도해주세요.');
-    }
-
-    if (!userData.contact) {
-      throw new Error('연락처 정보가 없습니다.');
-    }
-
-    return userData;
+    return docSnap.data();
   } catch (error) {
     console.error("계약 데이터 가져오기 오류:", error);
     throw error;
@@ -199,19 +249,19 @@ async function sendKakaoMember() {
 
     // 회원용 알림톡 파라미터 설정
     const params = new URLSearchParams({
-      'tpl_code': 'TY_6051',
-      'receiver_1': customerPhone,
-      'subject_1': '계약서',
-      'message_1': `[${kakaoConfig.COMPANY_NAME}]\n안녕하세요. ${customerName}님\n${kakaoConfig.COMPANY_NAME}에 등록해주셔서 감사드립니다!`,
-      'button_1': JSON.stringify({
-        "button": [
-          { "name": "채널추가", "linkType": "AC", "linkTypeName": "채널 추가" },
-          {
-            "name": "계약서 바로가기",
-            "linkType": "WL",
-            "linkTypeName": "웹링크",
-            "linkPc": `https://${contractUrl}`,
-            "linkMo": `https://${contractUrl}`
+            'tpl_code': 'TY_6051',
+            'receiver_1': customerPhone,
+            'subject_1': '계약서',
+            'message_1': `안녕하세요. ${customerName}님\n${kakaoConfig.COMPANY_NAME}에 등록해주셔서 감사드립니다!`,
+            'button_1': JSON.stringify({
+              "button": [
+                { "name": "채널추가", "linkType": "AC", "linkTypeName": "채널 추가" },
+                {
+                  "name": "계약서 바로가기",
+                  "linkType": "WL",
+                  "linkTypeName": "웹링크",
+                  "linkPc": `https://${contractUrl}`,
+                  "linkMo": `https://${contractUrl}`
           }
         ]
       }),
@@ -235,7 +285,7 @@ async function getManagerPhone() {
 
     try {
       // 관리자 설정에서 매니저 전화번호 가져오기
-      const docRef = doc(dbInstance, "AdminSettings", "settings");
+      const docRef = doc(dbInstance, "AdminSettings", "kakao");
       const docSnap = await getDoc(docRef);
 
       if (docSnap.exists()) {
@@ -313,3 +363,53 @@ async function sendKakaoManager() {
 }
 
 export { sendVerificationCode, sendKakaoMember, sendKakaoManager };
+async function sendKakaoneMember() {
+  try {
+    const kakaoConfig = await initializeKakao();
+    if (!kakaoConfig) {
+      throw new Error("카카오 설정을 불러오지 못했습니다.");
+    }
+
+    // 회원 계약 데이터 가져오기
+    const userData = await getContractData('Onetimepass', window.docIdone);
+    const customerName = userData.name;
+    const customerPhone = userData.contact;
+    const contractUrl = userData.imageUrl ? userData.imageUrl.replace('https://', '') : '';
+
+    if (!customerPhone) {
+      throw new Error('회원 전화번호를 찾을 수 없습니다.');
+    }
+
+    console.log(`회원 알림톡 전송 중: ${customerName}님 (${customerPhone})`);
+
+    // 회원용 알림톡 파라미터 설정
+    const params = new URLSearchParams({
+      'tpl_code': 'TY_6051',
+      'receiver_1': customerPhone,
+      'subject_1': '계약서',
+      'message_1': `[${kakaoConfig.COMPANY_NAME}]\n안녕하세요. ${customerName}님\n${kakaoConfig.COMPANY_NAME}에 등록해주셔서 감사드립니다!`,
+      'button_1': JSON.stringify({
+        "button": [
+          { "name": "채널추가", "linkType": "AC", "linkTypeName": "채널 추가" },
+          {
+            "name": "계약서 바로가기",
+            "linkType": "WL",
+            "linkTypeName": "웹링크",
+            "linkPc": `https://${contractUrl}`,
+            "linkMo": `https://${contractUrl}`
+          }
+        ]
+      }),
+      'failover': 'N'
+    });
+
+    await sendKakaoneAlimtalk(params);
+    return true;
+  } catch (error) {
+    console.error('회원 알림톡 전송 실패:', error);
+    throw error;
+  }
+}
+
+// 일회권 알림톡 전송 함수 내보내기
+export { sendKakaoneMember };
